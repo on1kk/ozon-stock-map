@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Остатки FBO Ozon · Сколько ₽ на каждом складе</title>
+<title>Stockmap · Сколько ₽ на каждом складе Ozon</title>
 <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -16,11 +16,7 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{height:100%}
-  body{
-    font-family:"Golos Text",system-ui,sans-serif;
-    background:var(--paper); color:var(--ink);
-    display:flex; flex-direction:column; overflow:hidden;
-  }
+  body{font-family:"Golos Text",system-ui,sans-serif;background:var(--paper);color:var(--ink);display:flex;flex-direction:column;overflow:hidden}
   .num{font-family:"JetBrains Mono",monospace}
 
   header{display:flex;align-items:baseline;gap:12px;padding:18px 22px 10px;flex-wrap:wrap}
@@ -30,7 +26,6 @@
   .updated{margin-left:auto;font-size:12px;color:var(--muted)}
   .updated b{color:var(--green);font-weight:500}
 
-  /* KPI */
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:8px 22px}
   .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
   .kpi .l{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
@@ -38,33 +33,22 @@
   .kpi .v{font-size:24px;font-weight:700;margin-top:5px}
   .kpi .s{font-size:11.5px;color:var(--muted);margin-top:3px}
   .kpi.black{background:var(--black-card);border-color:var(--black-card);color:#F4EFE6}
-  .kpi.black .l{color:#9d9585}
-  .kpi.black .s{color:#9d9585}
+  .kpi.black .l,.kpi.black .s{color:#9d9585}
   .kpi.black .v{color:#fff}
 
-  /* Риск-плашка */
-  .risk{
-    margin:4px 22px 8px;background:var(--green-bg);border-radius:14px;
-    padding:13px 18px;display:flex;align-items:center;gap:18px;
-  }
+  .risk{margin:4px 22px 8px;background:var(--green-bg);border-radius:14px;padding:13px 18px;display:flex;align-items:center;gap:18px}
   .risk p{font-size:13px;line-height:1.45;flex:1}
   .risk .pct{font-size:30px;font-weight:800;color:var(--green);white-space:nowrap}
-  .risk .pct small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.03em;color:var(--green);opacity:.85}
+  .risk .pct small{display:block;font-size:10.5px;font-weight:600;color:var(--green);opacity:.85}
   .risk.hi{background:#FBE9E4}
   .risk.hi .pct{color:var(--hot)}
 
-  /* Управление */
   .controls{display:flex;gap:12px;align-items:center;padding:4px 22px 10px;flex-wrap:wrap}
   .controls label{font-size:12px;color:var(--muted);font-weight:500}
-  select{
-    background:var(--card);color:var(--ink);border:1px solid var(--line);
-    border-radius:10px;padding:8px 12px;font-size:12.5px;font-family:inherit;
-    cursor:pointer;max-width:360px;
-  }
+  select{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12.5px;font-family:inherit;cursor:pointer;max-width:360px}
   .hint{font-size:11.5px;color:var(--muted);margin-left:auto}
   .hint i{font-style:normal;color:var(--orange);font-weight:600}
 
-  /* Основная сетка */
   main{flex:1;display:flex;gap:12px;min-height:0;padding:0 22px 18px}
   .map-wrap{flex:1.35;position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#EAE9E4}
   #map{position:absolute;inset:0}
@@ -76,56 +60,46 @@
   .back:hover{background:var(--line-2)}
   .list{flex:1;overflow-y:auto;padding:4px 0}
 
-  .row{
-    display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;align-items:center;
-    margin:6px 12px;padding:11px 14px;border:1px solid var(--line-2);border-radius:12px;
-    cursor:pointer;transition:border-color .15s, box-shadow .15s;background:var(--card);
-  }
+  .row{display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;align-items:center;margin:6px 12px;padding:11px 14px;border:1px solid var(--line-2);border-radius:12px;cursor:pointer;transition:border-color .15s,box-shadow .15s;background:var(--card)}
   .row:hover{border-color:var(--violet);box-shadow:0 2px 10px rgba(124,92,255,.08)}
-  .chip{
-    font-size:9px;font-weight:700;letter-spacing:.05em;color:#fff;background:var(--ozon);
-    border-radius:6px;padding:3px 7px;text-transform:uppercase;
-  }
+  .chip{font-size:9px;font-weight:700;letter-spacing:.05em;color:#fff;background:var(--ozon);border-radius:6px;padding:3px 7px;text-transform:uppercase}
   .row .name{font-size:13px;font-weight:600;line-height:1.3}
   .row .sub{font-size:11px;color:var(--muted);margin-top:2px}
   .row .money{text-align:right;white-space:nowrap}
   .row .val{font-size:13px;font-weight:700}
   .row .share{font-size:11px;color:var(--muted);margin-top:2px}
   .bar{grid-column:1/4;height:6px;border-radius:3px;background:var(--line-2);overflow:hidden}
-  .bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--violet),var(--blue))}
-  .bar i.over{background:linear-gradient(90deg,var(--orange),var(--hot))}
+  .bar i{display:block;height:100%;border-radius:3px}
   .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin-left:6px;vertical-align:1px;white-space:nowrap}
   .tag.over{background:#FCEBD6;color:var(--orange)}
   .tag.nocost{background:#FBE3E8;color:var(--hot)}
   .tag.transit{background:#E3ECFB;color:var(--blue)}
 
-  /* Предупреждения */
-  .warnbox{
-    position:absolute;left:12px;bottom:12px;z-index:900;max-width:320px;
-    background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:12px;
-    padding:10px 14px;font-size:11px;color:var(--ink);line-height:1.5;display:none;
-    box-shadow:0 4px 16px rgba(24,21,16,.08);
-  }
+  .warnbox{position:absolute;left:12px;bottom:12px;z-index:900;max-width:320px;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:11px;line-height:1.5;display:none;box-shadow:0 4px 16px rgba(24,21,16,.08)}
   .warnbox b{font-weight:700}
   .warnbox .w-or{color:var(--orange)} .warnbox .w-hot{color:var(--hot)} .warnbox .w-bl{color:var(--blue)}
   .warnbox .close{position:absolute;top:6px;right:10px;cursor:pointer;color:var(--muted);font-size:14px}
   .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:950;background:rgba(246,241,232,.9);font-size:13px;color:var(--muted);text-align:center;padding:20px}
 
-  /* Пины на карте */
-  .pin{
-    position:absolute;transform:translate(-50%,-100%);cursor:pointer;
-    display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 2px 5px rgba(24,21,16,.22));
+  /* Легенда тепловой шкалы */
+  .legend{
+    position:absolute;right:12px;bottom:34px;z-index:900;
+    background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:10px;
+    padding:8px 12px;font-size:10.5px;color:var(--muted);
+    box-shadow:0 4px 16px rgba(24,21,16,.08);
   }
-  .pin .pill{
-    background:var(--ink);color:#fff;border-radius:9px;padding:4px 9px;
-    font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:700;white-space:nowrap;
-    border:2px solid #fff;
-  }
-  .pin.over .pill{background:var(--orange)}
+  .legend .grad{width:130px;height:8px;border-radius:4px;margin:5px 0 3px;
+    background:linear-gradient(90deg,#FFE7C2,#FFB24D,#F4652E,#C81E3C,#6E0E2E)}
+  .legend .lbl{display:flex;justify-content:space-between}
+  .legend .over-note{margin-top:5px;color:var(--orange);font-weight:600}
+
+  /* Пины */
+  .pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 2px 5px rgba(24,21,16,.25))}
+  .pin .pill{border-radius:9px;padding:4px 9px;font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:700;white-space:nowrap;border:2px solid #fff;display:flex;align-items:center;gap:5px}
+  .pin .cnt{background:rgba(255,255,255,.85);color:#181510;border-radius:6px;padding:0 5px;font-size:9.5px}
   .pin .leg{width:2px;height:7px;background:#fff}
-  .pin .dot{width:7px;height:7px;border-radius:50%;background:var(--ink);border:2px solid #fff;margin-top:-1px}
-  .pin.over .dot{background:var(--orange)}
-  .pin:hover .pill{background:var(--violet)}
+  .pin .dot{width:7px;height:7px;border-radius:50%;border:2px solid #fff;margin-top:-1px}
+  .pin:hover .pill{outline:2px solid var(--violet)}
 
   @media(max-width:900px){
     main{flex-direction:column;overflow-y:auto}
@@ -139,7 +113,7 @@
 </head>
 <body>
 <header>
-  <h1>Exposure <span class="dot">·</span> сколько ₽ на каждом складе Ozon</h1>
+  <h1>Stockmap <span class="dot">·</span> сколько ₽ на каждом складе Ozon</h1>
   <span class="subtitle">сток по себестоимости · обновление каждый час</span>
   <div class="updated">обновлено: <b id="updated" class="num">—</b></div>
 </header>
@@ -164,7 +138,7 @@
     <option value="value">по стоимости</option>
     <option value="qty">по количеству</option>
   </select>
-  <span class="hint">Клик по складу — состав товаров. <i>Оранжевым</i> — затоваренные (запас &gt; 30 дней)</span>
+  <span class="hint">Клик по складу — состав. Цвет пина — объём стока, <i>⚠</i> — есть затоваренные позиции</span>
 </div>
 
 <main>
@@ -172,6 +146,12 @@
     <div id="map"></div>
     <div class="overlay" id="overlay">Загрузка данных…</div>
     <div class="warnbox" id="warnbox"><span class="close" onclick="this.parentNode.style.display='none'">✕</span><div id="warnContent"></div></div>
+    <div class="legend">
+      сток на складе
+      <div class="grad"></div>
+      <div class="lbl"><span>меньше</span><span>больше</span></div>
+      <div class="over-note">⚠ — затоваренные позиции</div>
+    </div>
   </div>
   <aside>
     <div class="aside-head" id="asideHead">
@@ -183,14 +163,28 @@
 
 <script>
 const YANDEX_API_KEY = "b18a75c9-ff35-440e-b401-a68c261f3a97";
+const CLUSTER_PX = 82;   // склады ближе этого расстояния (в пикселях) схлопываются
 
 const fmt  = n => Math.round(n).toLocaleString("ru-RU");
 const fmtR = n => n >= 1e6 ? (n/1e6).toLocaleString("ru-RU",{maximumFractionDigits:2}) + " млн ₽"
                            : Math.round(n/1e3).toLocaleString("ru-RU") + " тыс ₽";
 const fmtPin = n => n >= 1e6 ? (n/1e6).toLocaleString("ru-RU",{maximumFractionDigits:1}) + "М"
                              : Math.max(1,Math.round(n/1e3)) + "К";
+const shortName = s => s.split("_")[0].split(" ")[0];
 
-let DATA=null, map=null, pins=[], selectedOffer="", view="warehouses";
+/* Тепловая шкала: 0..1 -> цвет */
+const HEAT_STOPS = [[255,231,194],[255,178,77],[244,101,46],[200,30,60],[110,14,46]];
+function heat(t){
+  t = Math.max(0, Math.min(1, t));
+  const seg = t * (HEAT_STOPS.length - 1);
+  const i = Math.min(Math.floor(seg), HEAT_STOPS.length - 2);
+  const f = seg - i;
+  const c = HEAT_STOPS[i].map((v,k)=>Math.round(v + (HEAT_STOPS[i+1][k]-v)*f));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+const heatText = t => t > 0.42 ? "#FFFFFF" : "#3A2A10";
+
+let DATA=null, map=null, pins=[], selectedOffer="", view="warehouses", lastZoom=null;
 
 const listEl=document.getElementById("list"), titleEl=document.getElementById("asideTitle"),
       subEl=document.getElementById("asideSub"), headEl=document.getElementById("asideHead"),
@@ -206,6 +200,11 @@ const ys=document.createElement("script");
 ys.src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey="+YANDEX_API_KEY;
 ys.onload=()=>ymaps.ready(()=>{
   map=new ymaps.Map("map",{center:[56.5,55],zoom:4,controls:["zoomControl"]},{suppressMapOpenBlock:true});
+  map.events.add("boundschange",e=>{
+    const z=e.get("newZoom");
+    if(z!==lastZoom){ lastZoom=z; if(DATA) drawPins(); }
+  });
+  lastZoom=map.getZoom();
   if(DATA) drawPins();
 });
 document.head.appendChild(ys);
@@ -237,7 +236,6 @@ function onData(){
   document.getElementById("updated").textContent=
     new Date(DATA.updated_at).toLocaleString("ru-RU",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
 
-  /* Риск-плашка: крупнейшая точка */
   const top=[...ws].filter(w=>w.stock_value>0).sort((a,b)=>b.stock_value-a.stock_value)[0];
   if(top && stock>0){
     const pct=100*top.stock_value/stock;
@@ -252,7 +250,6 @@ function onData(){
       `${pct.toLocaleString("ru-RU",{maximumFractionDigits:1})}%<small>стока на одном складе</small>`;
   }
 
-  /* Дропдаун товаров */
   const products=new Map();
   ws.forEach(w=>w.items.forEach(i=>{
     if(!products.has(i.offer_id)) products.set(i.offer_id,{offer_id:i.offer_id,name:i.name,value:0});
@@ -264,14 +261,13 @@ function onData(){
     skuSel.appendChild(o);
   });
 
-  /* Предупреждения */
   const msgs=[];
   if(DATA.unknown_warehouses?.length)
     msgs.push(`<b class="w-or">Нераспознанные склады (${DATA.unknown_warehouses.length}):</b> ${DATA.unknown_warehouses.join(", ")} — добавьте их в warehouses.py`);
   if(DATA.offers_without_cost?.length)
-    msgs.push(`<b class="w-hot">Без себестоимости (${DATA.offers_without_cost.length} арт.):</b> ${DATA.offers_without_cost.slice(0,8).join(", ")}${DATA.offers_without_cost.length>8?"…":""} — не входят в денежный итог`);
+    msgs.push(`<b class="w-hot">Без себестоимости (${DATA.offers_without_cost.length} арт.):</b> ${DATA.offers_without_cost.slice(0,8).join(", ")}${DATA.offers_without_cost.length>8?"…":""} — допишите их в лист себестоимости`);
   if(DATA.cost_sheet_unmatched?.length)
-    msgs.push(`<b class="w-bl">В таблице, но нет в Ozon (${DATA.cost_sheet_unmatched.length} арт.):</b> ${DATA.cost_sheet_unmatched.slice(0,8).join(", ")}${DATA.cost_sheet_unmatched.length>8?"…":""} — проверьте написание в листе себестоимости`);
+    msgs.push(`<b class="w-bl">В таблице, но нет в каталоге Ozon (${DATA.cost_sheet_unmatched.length} арт.):</b> ${DATA.cost_sheet_unmatched.slice(0,8).join(", ")}${DATA.cost_sheet_unmatched.length>8?"…":""} — проверьте написание в листе`);
   if(msgs.length){
     document.getElementById("warnContent").innerHTML=msgs.join("<br><br>");
     document.getElementById("warnbox").style.display="block";
@@ -281,30 +277,62 @@ function onData(){
   renderWarehouses();
 }
 
-/* Пины-плашки */
+/* ===== Пины с группировкой и тепловой шкалой ===== */
 function drawPins(){
   pins.forEach(p=>map.geoObjects.remove(p));
   pins=[];
   const ws=DATA.warehouses.filter(w=>w.lat && whQty(w)>0);
   if(!ws.length) return;
-  ws.forEach(w=>{
-    const v=whValue(w), over=whOver(w);
+
+  /* группировка по пиксельному расстоянию на текущем зуме */
+  const zoom=map.getZoom();
+  const proj=map.options.get("projection");
+  const pts=ws.map(w=>({w, px:proj.toGlobalPixels([w.lat,w.lon],zoom)}));
+  pts.sort((a,b)=>whValue(b.w)-whValue(a.w));
+  const groups=[];
+  pts.forEach(p=>{
+    const g=groups.find(g=>Math.hypot(g.px[0]-p.px[0], g.px[1]-p.px[1])<CLUSTER_PX);
+    if(g){ g.members.push(p.w); }
+    else groups.push({px:p.px, anchor:p.w, members:[p.w]});
+  });
+
+  const maxV=Math.max(...groups.map(g=>g.members.reduce((s,w)=>s+whValue(w),0)),1);
+
+  groups.forEach(g=>{
+    const v=g.members.reduce((s,w)=>s+whValue(w),0);
+    const q=g.members.reduce((s,w)=>s+whQty(w),0);
+    const over=g.members.some(whOver);
+    const t=Math.sqrt(v/maxV);
+    const bg=heat(t), fg=heatText(t);
+    const label=shortName(g.anchor.name)+(g.members.length>1?"":"")+" · "+fmtPin(Math.max(v,1));
+    const cnt=g.members.length>1?`<span class="cnt">+${g.members.length-1}</span>`:"";
+    const warn=over?"⚠ ":"";
     const Layout=ymaps.templateLayoutFactory.createClass(
-      `<div class="pin ${over?"over":""}">
-         <div class="pill">${w.name.split("_")[0].split(" ")[0]} · ${fmtPin(Math.max(v,1))}</div>
-         <div class="leg"></div><div class="dot"></div>
+      `<div class="pin">
+         <div class="pill" style="background:${bg};color:${fg}">${warn}${label}${cnt}</div>
+         <div class="leg"></div><div class="dot" style="background:${bg}"></div>
        </div>`);
-    const pm=new ymaps.Placemark([w.lat,w.lon],
-      {hintContent:`${w.name} — ${fmtR(v)} · ${fmt(whQty(w))} шт`},
-      {iconLayout:Layout,
-       iconShape:{type:"Rectangle",coordinates:[[-60,-40],[60,0]]}});
-    pm.events.add("click",()=>{ openDetail(w); });
+    const hint=g.members.length>1
+      ? g.members.map(w=>`${w.name} — ${fmtR(whValue(w))}`).join("<br>")
+      : `${g.anchor.name} — ${fmtR(v)} · ${fmt(q)} шт`;
+    const pm=new ymaps.Placemark([g.anchor.lat,g.anchor.lon],
+      {hintContent:hint},
+      {iconLayout:Layout, iconShape:{type:"Rectangle",coordinates:[[-70,-42],[70,0]]}});
+    pm.events.add("click",()=>{
+      if(g.members.length>1){
+        /* раскрыть группу: приблизиться к её границам */
+        const lats=g.members.map(w=>w.lat), lons=g.members.map(w=>w.lon);
+        map.setBounds([[Math.min(...lats)-0.08,Math.min(...lons)-0.12],
+                       [Math.max(...lats)+0.08,Math.max(...lons)+0.12]],
+                      {checkZoomRange:true, duration:400});
+      } else openDetail(g.anchor);
+    });
     map.geoObjects.add(pm);
     pins.push(pm);
   });
 }
 
-/* Список складов */
+/* ===== Список складов ===== */
 function renderWarehouses(){
   view="warehouses";
   headEl.querySelector(".back")?.remove();
@@ -321,6 +349,7 @@ function renderWarehouses(){
   listEl.innerHTML=arr.map(x=>{
     const overN=x.w.items.filter(it=>it.over).length;
     const nocost=x.w.items.some(it=>it.nocost);
+    const t=Math.sqrt(Math.max(x.v,1)/maxV);
     return `
     <div class="row" data-wh="${x.w.name}">
       <span class="chip">Ozon</span>
@@ -331,19 +360,19 @@ function renderWarehouses(){
         <div class="sub">${x.w.addr||x.w.cluster}</div></div>
       <div class="money"><div class="val num">${fmt(x.v)} ₽</div>
         <div class="share num">${(100*x.v/total).toLocaleString("ru-RU",{maximumFractionDigits:1})}% · ${fmt(x.q)} шт</div></div>
-      <div class="bar"><i class="${whOver(x.w)?"over":""}" style="width:${(100*Math.max(x.v,1)/maxV).toFixed(1)}%"></i></div>
+      <div class="bar"><i style="width:${(100*Math.max(x.v,1)/maxV).toFixed(1)}%;background:${heat(t)}"></i></div>
     </div>`;}).join("");
 
   listEl.querySelectorAll(".row").forEach(r=>{
     r.addEventListener("click",()=>{
       const w=DATA.warehouses.find(w=>w.name===r.dataset.wh);
-      if(map&&w.lat) map.setCenter([w.lat,w.lon],7,{duration:400});
+      if(map&&w.lat) map.setCenter([w.lat,w.lon],8,{duration:400});
       openDetail(w);
     });
   });
 }
 
-/* Состав склада */
+/* ===== Состав склада ===== */
 function openDetail(w){
   view="detail";
   titleEl.textContent=w.name;
@@ -365,7 +394,7 @@ function openDetail(w){
         <div class="sub">${it.offer_id}${it.cost!=null?` · с/с ${fmt(it.cost)} ₽`:""} · запас: ${it.days===null?"нет продаж 30 дн":it.days+" дн"}${it.transit?` · в пути ${fmt(it.transit)} шт`:""}</div></div>
       <div class="money"><div class="val num">${it.nocost?"—":fmt(it.value)+" ₽"}</div>
         <div class="share num">${fmt(it.qty)} шт</div></div>
-      <div class="bar"><i class="${it.over?"over":""}" style="width:${(100*Math.max(it.value,1)/maxV).toFixed(1)}%"></i></div>
+      <div class="bar"><i style="width:${(100*Math.max(it.value,1)/maxV).toFixed(1)}%;background:${it.over?"linear-gradient(90deg,var(--orange),var(--hot))":"linear-gradient(90deg,var(--violet),var(--blue))"}"></i></div>
     </div>`).join("");
 }
 

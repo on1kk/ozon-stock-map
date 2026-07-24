@@ -146,6 +146,24 @@ def fetch_costs() -> tuple:
     return costs, originals
 
 
+def fetch_catalog_offers() -> set:
+    """Нормализованные артикулы ВСЕХ товаров кабинета (включая распроданные) —
+    чтобы сверять лист себестоимости с каталогом, а не только с текущими остатками."""
+    offers, last_id = set(), ""
+    while True:
+        d = ozon("/v3/product/list",
+                 {"filter": {"visibility": "ALL"}, "last_id": last_id, "limit": 1000})
+        result = d.get("result") or {}
+        items = result.get("items") or []
+        for it in items:
+            offers.add(norm_art(it.get("offer_id") or ""))
+        last_id = result.get("last_id") or ""
+        if not last_id or len(items) < 1000:
+            break
+    print(f"Каталог: всего товаров в кабинете — {len(offers)}")
+    return offers
+
+
 def main() -> None:
     if not CLIENT_ID or not API_KEY:
         print("Не заданы OZON_CLIENT_ID / OZON_API_KEY", file=sys.stderr)
@@ -154,6 +172,11 @@ def main() -> None:
     stock_rows = fetch_stock_rows()
     sales = fetch_sales_30d()
     costs, cost_originals = fetch_costs()
+    try:
+        catalog = fetch_catalog_offers()
+    except Exception as e:
+        print(f"Каталог недоступен ({e}), сверяю только с текущими остатками", file=sys.stderr)
+        catalog = None
 
     warehouses = {}    # name -> данные склада
     unknown = set()    # нераспознанные склады
@@ -228,10 +251,11 @@ def main() -> None:
         "warehouses": sorted(warehouses.values(), key=lambda w: w["stock_value"], reverse=True),
         "unknown_warehouses": sorted(unknown),
         "offers_without_cost": sorted(no_cost),
-        # артикулы, которые есть в Google-таблице, но не нашлись среди товаров Ozon
+        # артикулы, которые есть в Google-таблице, но не найдены в каталоге Ozon
         # (кандидаты на опечатку в таблице)
         "cost_sheet_unmatched": sorted(
-            cost_originals[k] for k in costs if k not in seen_offers
+            cost_originals[k] for k in costs
+            if k not in (catalog if catalog is not None else seen_offers)
         ),
     }
 
