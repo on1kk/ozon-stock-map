@@ -93,13 +93,12 @@
   .legend .lbl{display:flex;justify-content:space-between}
   .legend .over-note{margin-top:5px;color:var(--orange);font-weight:600}
 
-  /* Пины */
-  .pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 2px 5px rgba(24,21,16,.25))}
-  .pin .pill{border-radius:9px;padding:4px 9px;font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:700;white-space:nowrap;border:2px solid #fff;display:flex;align-items:center;gap:5px}
-  .pin .cnt{background:rgba(255,255,255,.85);color:#181510;border-radius:6px;padding:0 5px;font-size:9.5px}
-  .pin .leg{width:2px;height:7px;background:#fff}
-  .pin .dot{width:7px;height:7px;border-radius:50%;border:2px solid #fff;margin-top:-1px}
-  .pin:hover .pill{outline:2px solid var(--violet)}
+  /* Пины-выноски: точка склада + линия + плашка, которая не наезжает на соседей */
+  .pinw{position:absolute}
+  .pinw .ln{position:absolute;left:0;top:-1px;height:2px;background:#181510;opacity:.35;transform-origin:0 50%;pointer-events:none}
+  .pinw .dot{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(24,21,16,.35)}
+  .pinw .pill{position:absolute;transform:translate(-50%,-50%);border-radius:9px;padding:4px 9px;font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:700;white-space:nowrap;border:2px solid #fff;box-shadow:0 2px 6px rgba(24,21,16,.25);cursor:pointer}
+  .pinw .pill:hover{outline:2px solid var(--violet)}
 
   @media(max-width:900px){
     html,body{height:auto;overflow-x:hidden;overflow-y:auto;display:block}
@@ -176,7 +175,6 @@
 
 <script>
 const YANDEX_API_KEY = "b18a75c9-ff35-440e-b401-a68c261f3a97";
-const CLUSTER_PX = 82;   // склады ближе этого расстояния (в пикселях) схлопываются
 
 const fmt  = n => Math.round(n).toLocaleString("ru-RU");
 const fmtR = n => n >= 1e6 ? (n/1e6).toLocaleString("ru-RU",{maximumFractionDigits:2}) + " млн ₽"
@@ -298,56 +296,68 @@ function onData(){
   renderWarehouses();
 }
 
-/* ===== Пины с группировкой и тепловой шкалой ===== */
+/* ===== Пины-выноски: все склады отдельно, подписи не пересекаются ===== */
+const PILL_H = 26;                 // высота плашки в px
+const pillW = t => t.length * 6.9 + 28;  // оценка ширины по длине текста
+
+function labelCandidates(){
+  /* позиции для плашки вокруг точки: сначала сверху, потом по кругу, дальше — шире */
+  const out = [];
+  const angles = [-90, -55, -125, -20, -160, 20, 160, 55, 125, 90, 0, 180];
+  for (const r of [40, 72, 104, 136, 168])
+    for (const a of angles)
+      out.push([r * Math.cos(a * Math.PI / 180), r * Math.sin(a * Math.PI / 180)]);
+  return out;
+}
+const CANDIDATES = labelCandidates();
+
 function drawPins(){
   pins.forEach(p=>map.geoObjects.remove(p));
   pins=[];
   const ws=DATA.warehouses.filter(w=>w.lat && whQty(w)>0);
   if(!ws.length) return;
 
-  /* группировка по пиксельному расстоянию на текущем зуме */
   const zoom=map.getZoom();
   const proj=map.options.get("projection");
-  const pts=ws.map(w=>({w, px:proj.toGlobalPixels([w.lat,w.lon],zoom)}));
-  pts.sort((a,b)=>whValue(b.w)-whValue(a.w));
-  const groups=[];
+  const maxV=Math.max(...ws.map(w=>whValue(w)),1);
+
+  /* крупные размещаем первыми — им лучшие места */
+  const pts=ws.map(w=>({w, px:proj.toGlobalPixels([w.lat,w.lon],zoom)}))
+              .sort((a,b)=>whValue(b.w)-whValue(a.w));
+
+  const placed=[]; // занятые прямоугольники плашек в глобальных пикселях
+  const collides=(r)=>placed.some(p=>!(r.x+r.w+4<p.x || p.x+p.w+4<r.x || r.y+r.h+4<p.y || p.y+p.h+4<r.y));
+
   pts.forEach(p=>{
-    const g=groups.find(g=>Math.hypot(g.px[0]-p.px[0], g.px[1]-p.px[1])<CLUSTER_PX);
-    if(g){ g.members.push(p.w); }
-    else groups.push({px:p.px, anchor:p.w, members:[p.w]});
-  });
-
-  const maxV=Math.max(...groups.map(g=>g.members.reduce((s,w)=>s+whValue(w),0)),1);
-
-  groups.forEach(g=>{
-    const v=g.members.reduce((s,w)=>s+whValue(w),0);
-    const q=g.members.reduce((s,w)=>s+whQty(w),0);
-    const over=g.members.some(whOver);
+    const w=p.w, v=whValue(w), q=whQty(w), over=whOver(w);
     const t=Math.sqrt(v/maxV);
     const bg=heat(t), fg=heatText(t);
-    const label=shortName(g.anchor.name)+(g.members.length>1?"":"")+" · "+fmtPin(Math.max(v,1));
-    const cnt=g.members.length>1?`<span class="cnt">+${g.members.length-1}</span>`:"";
-    const warn=over?"⚠ ":"";
+    const label=(over?"⚠ ":"")+shortName(w.name)+" · "+fmtPin(Math.max(v,1));
+    const pw=pillW(label);
+
+    /* ищем свободное место для плашки */
+    let dx=0, dy=-40;
+    for(const c of CANDIDATES){
+      const r={x:p.px[0]+c[0]-pw/2, y:p.px[1]+c[1]-PILL_H/2, w:pw, h:PILL_H};
+      if(!collides(r)){ dx=c[0]; dy=c[1]; break; }
+    }
+    placed.push({x:p.px[0]+dx-pw/2, y:p.px[1]+dy-PILL_H/2, w:pw, h:PILL_H});
+
+    const len=Math.hypot(dx,dy);
+    const ang=Math.atan2(dy,dx)*180/Math.PI;
     const Layout=ymaps.templateLayoutFactory.createClass(
-      `<div class="pin">
-         <div class="pill" style="background:${bg};color:${fg}">${warn}${label}${cnt}</div>
-         <div class="leg"></div><div class="dot" style="background:${bg}"></div>
+      `<div class="pinw">
+         <div class="ln" style="width:${len.toFixed(0)}px;transform:rotate(${ang.toFixed(1)}deg)"></div>
+         <div class="dot" style="background:${bg}"></div>
+         <div class="pill" style="left:${dx.toFixed(0)}px;top:${dy.toFixed(0)}px;background:${bg};color:${fg}">${label}</div>
        </div>`);
-    const hint=g.members.length>1
-      ? g.members.map(w=>`${w.name} — ${fmtR(whValue(w))}`).join("<br>")
-      : `${g.anchor.name} — ${fmtR(v)} · ${fmt(q)} шт`;
-    const pm=new ymaps.Placemark([g.anchor.lat,g.anchor.lon],
-      {hintContent:hint},
-      {iconLayout:Layout, iconShape:{type:"Rectangle",coordinates:[[-70,-42],[70,0]]}});
-    pm.events.add("click",()=>{
-      if(g.members.length>1){
-        /* раскрыть группу: приблизиться к её границам */
-        const lats=g.members.map(w=>w.lat), lons=g.members.map(w=>w.lon);
-        map.setBounds([[Math.min(...lats)-0.08,Math.min(...lons)-0.12],
-                       [Math.max(...lats)+0.08,Math.max(...lons)+0.12]],
-                      {checkZoomRange:true, duration:400});
-      } else openDetail(g.anchor);
-    });
+    const pm=new ymaps.Placemark([w.lat,w.lon],
+      {hintContent:`${w.name} — ${fmtR(v)} · ${fmt(q)} шт`},
+      {iconLayout:Layout,
+       iconShape:{type:"Rectangle",
+                  coordinates:[[dx-pw/2, dy-PILL_H/2],[dx+pw/2, dy+PILL_H/2]]},
+       zIndex:1000+Math.round(t*100)});
+    pm.events.add("click",()=>openDetail(w));
     map.geoObjects.add(pm);
     pins.push(pm);
   });
