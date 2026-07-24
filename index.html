@@ -102,12 +102,25 @@
   .pin:hover .pill{outline:2px solid var(--violet)}
 
   @media(max-width:900px){
-    main{flex-direction:column;overflow-y:auto}
-    body{overflow:auto}
-    .map-wrap{min-height:44vh;flex:none}
-    aside{min-height:40vh}
-    .kpis{grid-template-columns:repeat(2,1fr)}
-    .risk{flex-direction:column;align-items:flex-start;gap:6px}
+    html,body{height:auto;overflow-x:hidden;overflow-y:auto;display:block}
+    header{padding:14px 14px 6px}
+    h1{font-size:15px}
+    .updated{margin-left:0;width:100%}
+    .kpis{grid-template-columns:repeat(2,1fr);padding:6px 14px;gap:8px}
+    .kpi{padding:11px 13px}
+    .kpi .v{font-size:19px}
+    .risk{margin:4px 14px 8px;flex-direction:column;align-items:flex-start;gap:6px;padding:12px 14px}
+    .risk .pct{font-size:24px}
+    .controls{padding:4px 14px 10px}
+    .controls select{max-width:100%;width:100%}
+    .hint{margin-left:0}
+    main{display:block;flex:none;min-height:0;padding:0 14px 20px;overflow:visible}
+    .map-wrap{height:420px;min-height:0;margin-bottom:12px}
+    aside{min-width:0;height:auto;overflow:visible}
+    .list{flex:none;overflow:visible;max-height:none}
+    .legend{right:8px;bottom:8px;padding:6px 9px}
+    .legend .grad{width:100px}
+    .warnbox{max-width:230px;font-size:10px}
   }
 </style>
 </head>
@@ -198,14 +211,22 @@ fetch("data/stocks.json?nocache="+Date.now())
 
 const ys=document.createElement("script");
 ys.src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey="+YANDEX_API_KEY;
+const IS_MOBILE = window.matchMedia("(max-width:900px)").matches;
 ys.onload=()=>ymaps.ready(()=>{
-  map=new ymaps.Map("map",{center:[56.5,55],zoom:4,controls:["zoomControl"]},{suppressMapOpenBlock:true});
+  map=new ymaps.Map("map",{center:[56.5,55],zoom:IS_MOBILE?3:4,controls:["zoomControl"]},{suppressMapOpenBlock:true});
+  if(IS_MOBILE){
+    /* колесо/жест прокрутки не перехватываем — страница листается нормально,
+       масштаб карты — кнопками +/- или щипком */
+    map.behaviors.disable("scrollZoom");
+  }
   map.events.add("boundschange",e=>{
     const z=e.get("newZoom");
     if(z!==lastZoom){ lastZoom=z; if(DATA) drawPins(); }
   });
   lastZoom=map.getZoom();
   if(DATA) drawPins();
+  /* при повороте телефона / изменении окна карта подстраивается под контейнер */
+  window.addEventListener("resize",()=>{ if(map) map.container.fitToViewport(); });
 });
 document.head.appendChild(ys);
 
@@ -375,6 +396,8 @@ function renderWarehouses(){
 /* ===== Состав склада ===== */
 function openDetail(w){
   view="detail";
+  if(window.matchMedia("(max-width:900px)").matches)
+    setTimeout(()=>headEl.scrollIntoView({behavior:"smooth"}),150);
   titleEl.textContent=w.name;
   subEl.textContent=`${w.addr||w.cluster} · ${fmtR(w.stock_value)} · ${fmt(w.qty)} шт`;
   if(!headEl.querySelector(".back")){
