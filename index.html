@@ -3,91 +3,157 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Остатки FBO Ozon · Карта складов</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Остатки FBO Ozon · Сколько ₽ на каждом складе</title>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0d1322; --panel:#141c30; --panel-2:#1a2440; --line:#243154;
-    --text:#e9eef8; --muted:#8b98b8; --accent:#4d8dff; --hot:#ff2d6c;
-    --warn:#ffb020; --ok:#37d99a;
+    --paper:#F6F1E8; --card:#FFFFFF; --ink:#181510; --muted:#8A8272;
+    --line:#E4DCCC; --line-2:#EFE9DB;
+    --violet:#7C5CFF; --blue:#2F6BFF; --ozon:#005BFF;
+    --orange:#E8890C; --hot:#E23A57;
+    --green-bg:#E4F0DF; --green:#2E7D46;
+    --black-card:#171410;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{height:100%}
-  body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;overflow:hidden}
+  body{
+    font-family:"Golos Text",system-ui,sans-serif;
+    background:var(--paper); color:var(--ink);
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .num{font-family:"JetBrains Mono",monospace}
 
-  header{display:flex;align-items:center;gap:14px;padding:10px 18px;border-bottom:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
-  .logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#7b5cff);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:#fff}
-  h1{font-size:14px;font-weight:600}
-  h1 span{color:var(--muted);font-weight:400}
-  .updated{margin-left:auto;font-size:12px;color:var(--muted);font-family:"IBM Plex Mono",monospace}
-  .updated b{color:var(--ok);font-weight:500}
+  header{display:flex;align-items:baseline;gap:12px;padding:18px 22px 10px;flex-wrap:wrap}
+  h1{font-size:17px;font-weight:800;letter-spacing:.02em;text-transform:uppercase}
+  h1 .dot{color:var(--violet)}
+  .subtitle{font-size:12px;color:var(--muted)}
+  .updated{margin-left:auto;font-size:12px;color:var(--muted)}
+  .updated b{color:var(--green);font-weight:500}
 
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
-  .kpi{background:var(--panel);padding:8px 18px}
-  .kpi .l{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-  .kpi .v{font-family:"IBM Plex Mono",monospace;font-size:18px;font-weight:600;margin-top:1px}
-  .kpi .v small{font-size:11px;color:var(--muted);font-weight:400}
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:8px 22px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .kpi .l{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .kpi .l .chip{color:var(--ozon)}
+  .kpi .v{font-size:24px;font-weight:700;margin-top:5px}
+  .kpi .s{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .kpi.black{background:var(--black-card);border-color:var(--black-card);color:#F4EFE6}
+  .kpi.black .l{color:#9d9585}
+  .kpi.black .s{color:#9d9585}
+  .kpi.black .v{color:#fff}
 
-  .controls{display:flex;gap:10px;align-items:center;padding:8px 18px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
-  .controls label{font-size:12px;color:var(--muted)}
-  select{background:var(--panel-2);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:6px 10px;font-size:12px;font-family:inherit;cursor:pointer;max-width:340px}
-  .hint{font-size:11px;color:var(--muted);margin-left:auto}
+  /* Риск-плашка */
+  .risk{
+    margin:4px 22px 8px;background:var(--green-bg);border-radius:14px;
+    padding:13px 18px;display:flex;align-items:center;gap:18px;
+  }
+  .risk p{font-size:13px;line-height:1.45;flex:1}
+  .risk .pct{font-size:30px;font-weight:800;color:var(--green);white-space:nowrap}
+  .risk .pct small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.03em;color:var(--green);opacity:.85}
+  .risk.hi{background:#FBE9E4}
+  .risk.hi .pct{color:var(--hot)}
 
-  main{flex:1;display:flex;min-height:0;position:relative}
-  #map{flex:1;background:#0a0f1c}
-  aside{width:360px;min-width:300px;border-left:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column}
-  .aside-head{padding:10px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
-  .aside-head .title{font-size:13px;font-weight:600;flex:1}
-  .aside-head .sub{font-size:11px;color:var(--muted)}
-  .back{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit}
-  .back:hover{background:var(--line)}
-  .list{flex:1;overflow-y:auto}
+  /* Управление */
+  .controls{display:flex;gap:12px;align-items:center;padding:4px 22px 10px;flex-wrap:wrap}
+  .controls label{font-size:12px;color:var(--muted);font-weight:500}
+  select{
+    background:var(--card);color:var(--ink);border:1px solid var(--line);
+    border-radius:10px;padding:8px 12px;font-size:12.5px;font-family:inherit;
+    cursor:pointer;max-width:360px;
+  }
+  .hint{font-size:11.5px;color:var(--muted);margin-left:auto}
+  .hint i{font-style:normal;color:var(--orange);font-weight:600}
 
-  .row{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;padding:9px 16px;border-bottom:1px solid rgba(36,49,84,.5);cursor:pointer;transition:background .15s}
-  .row:hover,.row.active{background:var(--panel-2)}
-  .rank{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);text-align:right}
-  .row .name{font-size:12.5px;font-weight:500}
-  .row .sub{font-size:11px;color:var(--muted);margin-top:1px}
-  .row .val{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;text-align:right}
-  .row .qty{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);text-align:right;margin-top:1px}
-  .bar{grid-column:2/4;height:3px;border-radius:2px;background:var(--panel-2);overflow:hidden;margin-top:2px}
-  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#7b5cff);border-radius:2px}
-  .bar i.over{background:linear-gradient(90deg,var(--warn),var(--hot))}
-  .tag{display:inline-block;padding:1px 7px;border-radius:20px;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;margin-left:6px;vertical-align:1px;white-space:nowrap}
-  .tag.over{background:rgba(255,176,32,.15);color:var(--warn)}
-  .tag.nocost{background:rgba(255,45,108,.15);color:var(--hot)}
-  .tag.transit{background:rgba(77,141,255,.15);color:var(--accent)}
+  /* Основная сетка */
+  main{flex:1;display:flex;gap:12px;min-height:0;padding:0 22px 18px}
+  .map-wrap{flex:1.35;position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#EAE9E4}
+  #map{position:absolute;inset:0}
+  aside{flex:1;min-width:340px;background:var(--card);border:1px solid var(--line);border-radius:16px;display:flex;flex-direction:column;overflow:hidden}
+  .aside-head{padding:13px 18px;border-bottom:1px solid var(--line-2);display:flex;align-items:center;gap:10px}
+  .aside-head .title{font-size:13.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;flex:1}
+  .aside-head .sub{font-size:11.5px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}
+  .back{background:var(--paper);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:5px 12px;font-size:11.5px;cursor:pointer;font-family:inherit;font-weight:600}
+  .back:hover{background:var(--line-2)}
+  .list{flex:1;overflow-y:auto;padding:4px 0}
 
-  .warnbox{position:absolute;left:12px;bottom:12px;z-index:900;background:rgba(20,28,48,.94);border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:11px;color:var(--muted);max-width:290px;display:none}
-  .warnbox b{color:var(--warn)}
-  .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:950;background:rgba(13,19,34,.85);font-size:13px;color:var(--muted);text-align:center;padding:20px}
+  .row{
+    display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;align-items:center;
+    margin:6px 12px;padding:11px 14px;border:1px solid var(--line-2);border-radius:12px;
+    cursor:pointer;transition:border-color .15s, box-shadow .15s;background:var(--card);
+  }
+  .row:hover{border-color:var(--violet);box-shadow:0 2px 10px rgba(124,92,255,.08)}
+  .chip{
+    font-size:9px;font-weight:700;letter-spacing:.05em;color:#fff;background:var(--ozon);
+    border-radius:6px;padding:3px 7px;text-transform:uppercase;
+  }
+  .row .name{font-size:13px;font-weight:600;line-height:1.3}
+  .row .sub{font-size:11px;color:var(--muted);margin-top:2px}
+  .row .money{text-align:right;white-space:nowrap}
+  .row .val{font-size:13px;font-weight:700}
+  .row .share{font-size:11px;color:var(--muted);margin-top:2px}
+  .bar{grid-column:1/4;height:6px;border-radius:3px;background:var(--line-2);overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--violet),var(--blue))}
+  .bar i.over{background:linear-gradient(90deg,var(--orange),var(--hot))}
+  .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:9.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin-left:6px;vertical-align:1px;white-space:nowrap}
+  .tag.over{background:#FCEBD6;color:var(--orange)}
+  .tag.nocost{background:#FBE3E8;color:var(--hot)}
+  .tag.transit{background:#E3ECFB;color:var(--blue)}
 
-  .pp{min-width:200px;font-size:12px;font-family:"IBM Plex Sans",sans-serif}
-  .pp b{font-size:13px;display:block;margin-bottom:5px}
-  .pp table{width:100%;border-collapse:collapse}
-  .pp td{padding:2px 0;color:#5a6788}
-  .pp td:last-child{text-align:right;color:#111;font-family:"IBM Plex Mono",monospace;font-weight:500}
+  /* Предупреждения */
+  .warnbox{
+    position:absolute;left:12px;bottom:12px;z-index:900;max-width:320px;
+    background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:12px;
+    padding:10px 14px;font-size:11px;color:var(--ink);line-height:1.5;display:none;
+    box-shadow:0 4px 16px rgba(24,21,16,.08);
+  }
+  .warnbox b{font-weight:700}
+  .warnbox .w-or{color:var(--orange)} .warnbox .w-hot{color:var(--hot)} .warnbox .w-bl{color:var(--blue)}
+  .warnbox .close{position:absolute;top:6px;right:10px;cursor:pointer;color:var(--muted);font-size:14px}
+  .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:950;background:rgba(246,241,232,.9);font-size:13px;color:var(--muted);text-align:center;padding:20px}
 
-  @media(max-width:820px){
-    main{flex-direction:column}
-    aside{width:100%;max-height:42vh;border-left:none;border-top:1px solid var(--line)}
+  /* Пины на карте */
+  .pin{
+    position:absolute;transform:translate(-50%,-100%);cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 2px 5px rgba(24,21,16,.22));
+  }
+  .pin .pill{
+    background:var(--ink);color:#fff;border-radius:9px;padding:4px 9px;
+    font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:700;white-space:nowrap;
+    border:2px solid #fff;
+  }
+  .pin.over .pill{background:var(--orange)}
+  .pin .leg{width:2px;height:7px;background:#fff}
+  .pin .dot{width:7px;height:7px;border-radius:50%;background:var(--ink);border:2px solid #fff;margin-top:-1px}
+  .pin.over .dot{background:var(--orange)}
+  .pin:hover .pill{background:var(--violet)}
+
+  @media(max-width:900px){
+    main{flex-direction:column;overflow-y:auto}
+    body{overflow:auto}
+    .map-wrap{min-height:44vh;flex:none}
+    aside{min-height:40vh}
     .kpis{grid-template-columns:repeat(2,1fr)}
-    .hint{display:none}
+    .risk{flex-direction:column;align-items:flex-start;gap:6px}
   }
 </style>
 </head>
 <body>
 <header>
-  <div class="logo">FBO</div>
-  <h1>Остатки по складам Ozon <span>· сток по себестоимости</span></h1>
-  <div class="updated">обновлено: <b id="updated">—</b></div>
+  <h1>Exposure <span class="dot">·</span> сколько ₽ на каждом складе Ozon</h1>
+  <span class="subtitle">сток по себестоимости · обновление каждый час</span>
+  <div class="updated">обновлено: <b id="updated" class="num">—</b></div>
 </header>
 
 <div class="kpis">
-  <div class="kpi"><div class="l">Сток на складах</div><div class="v" id="kStock">—</div></div>
-  <div class="kpi"><div class="l">В пути</div><div class="v" id="kTransit">—</div></div>
-  <div class="kpi"><div class="l">Единиц товара</div><div class="v" id="kQty">—</div></div>
-  <div class="kpi"><div class="l">Складов</div><div class="v" id="kWh">—</div></div>
+  <div class="kpi"><div class="l"><span class="chip">Ozon</span> · Сток на складах</div><div class="v num" id="kStock">—</div><div class="s" id="kStockSub">по себестоимости</div></div>
+  <div class="kpi"><div class="l">В пути на склады</div><div class="v num" id="kTransit">—</div><div class="s" id="kTransitSub">едет в поставках</div></div>
+  <div class="kpi"><div class="l">Единиц товара</div><div class="v num" id="kQty">—</div><div class="s" id="kQtySub">на всех складах</div></div>
+  <div class="kpi black"><div class="l">Затоварено</div><div class="v num" id="kOver">—</div><div class="s" id="kOverSub">запас &gt; 30 дней продаж</div></div>
+</div>
+
+<div class="risk" id="risk" style="display:none">
+  <p id="riskText"></p>
+  <div class="pct num" id="riskPct"></div>
 </div>
 
 <div class="controls">
@@ -98,211 +164,216 @@
     <option value="value">по стоимости</option>
     <option value="qty">по количеству</option>
   </select>
-  <span class="hint">Клик по складу — состав товаров на нём. Оранжевым — затоваренные (запас &gt; 30 дней)</span>
+  <span class="hint">Клик по складу — состав товаров. <i>Оранжевым</i> — затоваренные (запас &gt; 30 дней)</span>
 </div>
 
 <main>
-  <div id="map">
+  <div class="map-wrap">
+    <div id="map"></div>
     <div class="overlay" id="overlay">Загрузка данных…</div>
-    <div class="warnbox" id="warnbox"></div>
+    <div class="warnbox" id="warnbox"><span class="close" onclick="this.parentNode.style.display='none'">✕</span><div id="warnContent"></div></div>
   </div>
   <aside>
     <div class="aside-head" id="asideHead">
-      <div><div class="title" id="asideTitle">Склады</div><div class="sub" id="asideSub"></div></div>
+      <div style="flex:1"><div class="title" id="asideTitle">Склады</div><div class="sub" id="asideSub"></div></div>
     </div>
     <div class="list" id="list"></div>
   </aside>
 </main>
 
 <script>
-/* ===== Ключ Яндекс.Карт ===== */
 const YANDEX_API_KEY = "b18a75c9-ff35-440e-b401-a68c261f3a97";
 
 const fmt  = n => Math.round(n).toLocaleString("ru-RU");
 const fmtR = n => n >= 1e6 ? (n/1e6).toLocaleString("ru-RU",{maximumFractionDigits:2}) + " млн ₽"
                            : Math.round(n/1e3).toLocaleString("ru-RU") + " тыс ₽";
+const fmtPin = n => n >= 1e6 ? (n/1e6).toLocaleString("ru-RU",{maximumFractionDigits:1}) + "М"
+                             : Math.max(1,Math.round(n/1e3)) + "К";
 
-let DATA = null;          // содержимое stocks.json
-let map = null;
-let circles = [];
-let selectedOffer = "";
-let view = "warehouses";
+let DATA=null, map=null, pins=[], selectedOffer="", view="warehouses";
 
-const listEl  = document.getElementById("list");
-const titleEl = document.getElementById("asideTitle");
-const subEl   = document.getElementById("asideSub");
-const headEl  = document.getElementById("asideHead");
-const sortSel = document.getElementById("sort");
-const skuSel  = document.getElementById("skuFilter");
-const overlay = document.getElementById("overlay");
-const warnbox = document.getElementById("warnbox");
+const listEl=document.getElementById("list"), titleEl=document.getElementById("asideTitle"),
+      subEl=document.getElementById("asideSub"), headEl=document.getElementById("asideHead"),
+      sortSel=document.getElementById("sort"), skuSel=document.getElementById("skuFilter"),
+      overlay=document.getElementById("overlay");
 
-/* ===== Загрузка данных ===== */
-fetch("data/stocks.json?nocache=" + Date.now())
-  .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
-  .then(d => { DATA = d; onData(); })
-  .catch(() => {
-    overlay.innerHTML = "Данных пока нет.<br>Запустите workflow «Обновление остатков» во вкладке Actions репозитория — файл data/stocks.json появится через минуту.";
-  });
+fetch("data/stocks.json?nocache="+Date.now())
+  .then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
+  .then(d=>{ DATA=d; onData(); })
+  .catch(()=>{ overlay.innerHTML="Данных пока нет.<br>Запустите workflow «Обновление остатков» во вкладке Actions."; });
 
-/* ===== Яндекс.Карты ===== */
-const ys = document.createElement("script");
-ys.src = "https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=" + YANDEX_API_KEY;
-ys.onload = () => ymaps.ready(() => {
-  map = new ymaps.Map("map", {center:[57.5,63], zoom:4, controls:["zoomControl"]},
-                      {suppressMapOpenBlock:true});
-  if (DATA) drawCircles();
+const ys=document.createElement("script");
+ys.src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey="+YANDEX_API_KEY;
+ys.onload=()=>ymaps.ready(()=>{
+  map=new ymaps.Map("map",{center:[56.5,55],zoom:4,controls:["zoomControl"]},{suppressMapOpenBlock:true});
+  if(DATA) drawPins();
 });
 document.head.appendChild(ys);
-
-function onData(){
-  overlay.style.display = "none";
-
-  /* KPI */
-  const ws = DATA.warehouses;
-  const stock   = ws.reduce((s,w)=>s+w.stock_value,0);
-  const transit = ws.reduce((s,w)=>s+w.transit_value,0);
-  const qty     = ws.reduce((s,w)=>s+w.qty,0);
-  document.getElementById("kStock").textContent   = fmtR(stock);
-  document.getElementById("kTransit").textContent = fmtR(transit);
-  document.getElementById("kQty").innerHTML       = fmt(qty)+" <small>шт</small>";
-  document.getElementById("kWh").textContent      = ws.filter(w=>w.lat).length;
-  document.getElementById("updated").textContent  =
-    new Date(DATA.updated_at).toLocaleString("ru-RU",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
-
-  /* Дропдаун товаров */
-  const products = new Map();
-  ws.forEach(w => w.items.forEach(i => {
-    if(!products.has(i.offer_id))
-      products.set(i.offer_id, {offer_id:i.offer_id, name:i.name, value:0});
-    products.get(i.offer_id).value += i.value;
-  }));
-  [...products.values()].sort((a,b)=>b.value-a.value).forEach(p=>{
-    const o = document.createElement("option");
-    o.value = p.offer_id;
-    o.textContent = `${p.name} (${p.offer_id})`;
-    skuSel.appendChild(o);
-  });
-
-  /* Предупреждения */
-  const msgs = [];
-  if (DATA.unknown_warehouses?.length)
-    msgs.push(`<b>Нераспознанные склады (${DATA.unknown_warehouses.length}):</b> ${DATA.unknown_warehouses.join(", ")} — добавьте их в warehouses.py`);
-  if (DATA.offers_without_cost?.length)
-    msgs.push(`<b>Без себестоимости (${DATA.offers_without_cost.length} арт.):</b> ${DATA.offers_without_cost.slice(0,8).join(", ")}${DATA.offers_without_cost.length>8?"…":""} — они не входят в денежный итог`);
-  if (msgs.length){ warnbox.innerHTML = msgs.join("<br><br>"); warnbox.style.display = "block"; }
-
-  if (map) drawCircles();
-  renderWarehouses();
-}
 
 function itemOf(w){ return w.items.find(i=>i.offer_id===selectedOffer); }
 function whValue(w){ return selectedOffer ? (itemOf(w)?.value ?? 0) : w.stock_value; }
 function whQty(w){ return selectedOffer ? (itemOf(w)?.qty ?? 0) : w.qty; }
+function whOver(w){ return selectedOffer ? !!itemOf(w)?.over : w.items.some(i=>i.over); }
 
-function drawCircles(){
-  circles.forEach(c=>map.geoObjects.remove(c));
-  circles = [];
-  const ws = DATA.warehouses.filter(w=>w.lat && whQty(w)>0);
-  const vals = ws.map(w=>Math.max(whValue(w), 1));
-  if(!vals.length) return;
-  const maxV = Math.max(...vals);
+function onData(){
+  overlay.style.display="none";
+  const ws=DATA.warehouses;
+  const stock=ws.reduce((s,w)=>s+w.stock_value,0);
+  const transit=ws.reduce((s,w)=>s+w.transit_value,0);
+  const transitQ=ws.reduce((s,w)=>s+w.transit_qty,0);
+  const qty=ws.reduce((s,w)=>s+w.qty,0);
+  const overSum=ws.reduce((s,w)=>s+w.items.filter(i=>i.over).reduce((a,i)=>a+i.value,0),0);
+  const overCnt=ws.reduce((s,w)=>s+w.items.filter(i=>i.over).length,0);
+
+  document.getElementById("kStock").textContent=fmtR(stock);
+  document.getElementById("kStockSub").textContent=`по себестоимости · ${ws.filter(w=>w.lat).length} складов`;
+  document.getElementById("kTransit").textContent=fmtR(transit);
+  document.getElementById("kTransitSub").textContent=`${fmt(transitQ)} шт едет в поставках`;
+  document.getElementById("kQty").textContent=fmt(qty)+" шт";
+  document.getElementById("kQtySub").textContent=`на ${ws.length} складах и точках`;
+  document.getElementById("kOver").textContent=fmtR(overSum);
+  document.getElementById("kOverSub").textContent=
+    `${overCnt} позиций · ${stock?Math.round(100*overSum/stock):0}% стока · запас > ${DATA.turnover_limit_days} дн`;
+  document.getElementById("updated").textContent=
+    new Date(DATA.updated_at).toLocaleString("ru-RU",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+
+  /* Риск-плашка: крупнейшая точка */
+  const top=[...ws].filter(w=>w.stock_value>0).sort((a,b)=>b.stock_value-a.stock_value)[0];
+  if(top && stock>0){
+    const pct=100*top.stock_value/stock;
+    const el=document.getElementById("risk");
+    el.style.display="flex";
+    if(pct>25) el.classList.add("hi");
+    document.getElementById("riskText").innerHTML=
+      `Крупнейшая одиночная точка риска — <b>${top.name}</b>${top.addr?` (${top.addr})`:""}. `+
+      `Потеря этого склада завтра = <b>минус ${fmt(top.stock_value)} ₽</b> оборотного капитала. `+
+      (pct>25?`Концентрация выше нормы — стоит разгрузить.`:`Концентрация в пределах нормы.`);
+    document.getElementById("riskPct").innerHTML=
+      `${pct.toLocaleString("ru-RU",{maximumFractionDigits:1})}%<small>стока на одном складе</small>`;
+  }
+
+  /* Дропдаун товаров */
+  const products=new Map();
+  ws.forEach(w=>w.items.forEach(i=>{
+    if(!products.has(i.offer_id)) products.set(i.offer_id,{offer_id:i.offer_id,name:i.name,value:0});
+    products.get(i.offer_id).value+=i.value;
+  }));
+  [...products.values()].sort((a,b)=>b.value-a.value).forEach(p=>{
+    const o=document.createElement("option");
+    o.value=p.offer_id; o.textContent=`${p.name} (${p.offer_id})`;
+    skuSel.appendChild(o);
+  });
+
+  /* Предупреждения */
+  const msgs=[];
+  if(DATA.unknown_warehouses?.length)
+    msgs.push(`<b class="w-or">Нераспознанные склады (${DATA.unknown_warehouses.length}):</b> ${DATA.unknown_warehouses.join(", ")} — добавьте их в warehouses.py`);
+  if(DATA.offers_without_cost?.length)
+    msgs.push(`<b class="w-hot">Без себестоимости (${DATA.offers_without_cost.length} арт.):</b> ${DATA.offers_without_cost.slice(0,8).join(", ")}${DATA.offers_without_cost.length>8?"…":""} — не входят в денежный итог`);
+  if(DATA.cost_sheet_unmatched?.length)
+    msgs.push(`<b class="w-bl">В таблице, но нет в Ozon (${DATA.cost_sheet_unmatched.length} арт.):</b> ${DATA.cost_sheet_unmatched.slice(0,8).join(", ")}${DATA.cost_sheet_unmatched.length>8?"…":""} — проверьте написание в листе себестоимости`);
+  if(msgs.length){
+    document.getElementById("warnContent").innerHTML=msgs.join("<br><br>");
+    document.getElementById("warnbox").style.display="block";
+  }
+
+  if(map) drawPins();
+  renderWarehouses();
+}
+
+/* Пины-плашки */
+function drawPins(){
+  pins.forEach(p=>map.geoObjects.remove(p));
+  pins=[];
+  const ws=DATA.warehouses.filter(w=>w.lat && whQty(w)>0);
+  if(!ws.length) return;
   ws.forEach(w=>{
-    const v = Math.max(whValue(w),1);
-    const hasOver = selectedOffer ? (itemOf(w)?.over) : w.items.some(i=>i.over);
-    const r = 25000 + 95000*Math.sqrt(v/maxV);
-    const c = new ymaps.Circle([[w.lat,w.lon], r], {balloonContent: balloonHtml(w)}, {
-      fillColor: hasOver ? "#ffb02040" : "#4d8dff40",
-      strokeColor: hasOver ? "#ffb020" : "#4d8dff",
-      strokeWidth: 1.5,
-    });
-    c.events.add("click", ()=>openDetail(w));
-    map.geoObjects.add(c);
-    circles.push(c);
+    const v=whValue(w), over=whOver(w);
+    const Layout=ymaps.templateLayoutFactory.createClass(
+      `<div class="pin ${over?"over":""}">
+         <div class="pill">${w.name.split("_")[0].split(" ")[0]} · ${fmtPin(Math.max(v,1))}</div>
+         <div class="leg"></div><div class="dot"></div>
+       </div>`);
+    const pm=new ymaps.Placemark([w.lat,w.lon],
+      {hintContent:`${w.name} — ${fmtR(v)} · ${fmt(whQty(w))} шт`},
+      {iconLayout:Layout,
+       iconShape:{type:"Rectangle",coordinates:[[-60,-40],[60,0]]}});
+    pm.events.add("click",()=>{ openDetail(w); });
+    map.geoObjects.add(pm);
+    pins.push(pm);
   });
 }
 
-function balloonHtml(w){
-  const it = itemOf(w);
-  return `<div class="pp"><b>${w.name}</b>
-    <table>
-      <tr><td>Кластер</td><td>${w.cluster}</td></tr>
-      <tr><td>${selectedOffer?"Сток товара":"Сток"}</td><td>${fmtR(whValue(w))}</td></tr>
-      <tr><td>Количество</td><td>${fmt(whQty(w))} шт</td></tr>
-      ${selectedOffer && it ? `<tr><td>Запас</td><td>${it.days===null?"нет продаж":it.days+" дн"}</td></tr>` : ""}
-      ${!selectedOffer && w.transit_qty ? `<tr><td>В пути</td><td>${fmt(w.transit_qty)} шт · ${fmtR(w.transit_value)}</td></tr>` : ""}
-    </table></div>`;
-}
-
+/* Список складов */
 function renderWarehouses(){
-  view = "warehouses";
+  view="warehouses";
   headEl.querySelector(".back")?.remove();
-  titleEl.textContent = selectedOffer ? "Где лежит товар" : "Склады";
-  subEl.textContent = selectedOffer
-    ? (skuSel.selectedOptions[0]?.textContent || "")
-    : "клик — состав товаров на складе";
+  titleEl.textContent=selectedOffer?"Где лежит товар":"Склады — от большего к меньшему";
+  subEl.textContent=selectedOffer?(skuSel.selectedOptions[0]?.textContent||""):"клик — состав товаров на складе";
 
-  const key = sortSel.value;
-  const arr = DATA.warehouses
-    .map(w=>({w, v:whValue(w), q:whQty(w)}))
+  const key=sortSel.value;
+  const arr=DATA.warehouses.map(w=>({w,v:whValue(w),q:whQty(w)}))
     .filter(x=>x.q>0)
-    .sort((a,b)=> key==="qty" ? b.q-a.q : b.v-a.v);
-  const maxV = arr.length ? Math.max(...arr.map(x=>Math.max(x.v,1))) : 1;
+    .sort((a,b)=>key==="qty"?b.q-a.q:b.v-a.v);
+  const total=arr.reduce((s,x)=>s+x.v,0)||1;
+  const maxV=Math.max(...arr.map(x=>Math.max(x.v,1)),1);
 
-  listEl.innerHTML = arr.map((x,i)=>{
-    const overN = x.w.items.filter(it=>it.over).length;
-    const nocost = x.w.items.some(it=>it.nocost);
+  listEl.innerHTML=arr.map(x=>{
+    const overN=x.w.items.filter(it=>it.over).length;
+    const nocost=x.w.items.some(it=>it.nocost);
     return `
     <div class="row" data-wh="${x.w.name}">
-      <div class="rank">${String(i+1).padStart(2,"0")}</div>
+      <span class="chip">Ozon</span>
       <div><div class="name">${x.w.name}
           ${overN?`<span class="tag over">затовар ×${overN}</span>`:""}
           ${nocost?'<span class="tag nocost">нет с/с</span>':""}
-          ${x.w.transit_qty?'<span class="tag transit">в пути</span>':""}
-          ${!x.w.lat?'<span class="tag nocost">нет на карте</span>':""}</div>
-        <div class="sub">${x.w.cluster}</div></div>
-      <div><div class="val">${fmtR(x.v)}</div><div class="qty">${fmt(x.q)} шт</div></div>
-      <div class="bar"><i style="width:${(100*Math.max(x.v,1)/maxV).toFixed(1)}%"></i></div>
+          ${x.w.transit_qty?'<span class="tag transit">в пути</span>':""}</div>
+        <div class="sub">${x.w.addr||x.w.cluster}</div></div>
+      <div class="money"><div class="val num">${fmt(x.v)} ₽</div>
+        <div class="share num">${(100*x.v/total).toLocaleString("ru-RU",{maximumFractionDigits:1})}% · ${fmt(x.q)} шт</div></div>
+      <div class="bar"><i class="${whOver(x.w)?"over":""}" style="width:${(100*Math.max(x.v,1)/maxV).toFixed(1)}%"></i></div>
     </div>`;}).join("");
 
   listEl.querySelectorAll(".row").forEach(r=>{
     r.addEventListener("click",()=>{
-      const w = DATA.warehouses.find(w=>w.name===r.dataset.wh);
-      if(map && w.lat) map.setCenter([w.lat,w.lon], 6, {duration:400});
+      const w=DATA.warehouses.find(w=>w.name===r.dataset.wh);
+      if(map&&w.lat) map.setCenter([w.lat,w.lon],7,{duration:400});
       openDetail(w);
     });
   });
 }
 
+/* Состав склада */
 function openDetail(w){
-  view = "detail";
-  titleEl.textContent = w.name;
-  subEl.textContent = `${w.cluster} · ${fmtR(w.stock_value)} · ${fmt(w.qty)} шт`;
+  view="detail";
+  titleEl.textContent=w.name;
+  subEl.textContent=`${w.addr||w.cluster} · ${fmtR(w.stock_value)} · ${fmt(w.qty)} шт`;
   if(!headEl.querySelector(".back")){
-    const b = document.createElement("button");
-    b.className = "back"; b.textContent = "← Все склады";
-    b.addEventListener("click", renderWarehouses);
+    const b=document.createElement("button");
+    b.className="back"; b.textContent="← Все склады";
+    b.addEventListener("click",renderWarehouses);
     headEl.prepend(b);
   }
-  const items = [...w.items].sort((a,b)=>b.value-a.value);
-  const maxV = Math.max(...items.map(i=>Math.max(i.value,1)), 1);
-  listEl.innerHTML = items.map((it,i)=>`
+  const items=[...w.items].sort((a,b)=>b.value-a.value);
+  const maxV=Math.max(...items.map(i=>Math.max(i.value,1)),1);
+  listEl.innerHTML=items.map((it,i)=>`
     <div class="row" style="cursor:default">
-      <div class="rank">${String(i+1).padStart(2,"0")}</div>
+      <span class="chip" style="background:${it.over?"var(--orange)":it.nocost?"var(--hot)":"var(--violet)"}">${String(i+1).padStart(2,"0")}</span>
       <div><div class="name">${it.name}
           ${it.over?'<span class="tag over">затовар</span>':""}
           ${it.nocost?'<span class="tag nocost">нет с/с</span>':""}</div>
         <div class="sub">${it.offer_id}${it.cost!=null?` · с/с ${fmt(it.cost)} ₽`:""} · запас: ${it.days===null?"нет продаж 30 дн":it.days+" дн"}${it.transit?` · в пути ${fmt(it.transit)} шт`:""}</div></div>
-      <div><div class="val">${it.nocost?"—":fmtR(it.value)}</div><div class="qty">${fmt(it.qty)} шт</div></div>
-      <div class="bar"><i class="${it.over?'over':''}" style="width:${(100*Math.max(it.value,1)/maxV).toFixed(1)}%"></i></div>
+      <div class="money"><div class="val num">${it.nocost?"—":fmt(it.value)+" ₽"}</div>
+        <div class="share num">${fmt(it.qty)} шт</div></div>
+      <div class="bar"><i class="${it.over?"over":""}" style="width:${(100*Math.max(it.value,1)/maxV).toFixed(1)}%"></i></div>
     </div>`).join("");
 }
 
-skuSel.addEventListener("change", e=>{
-  selectedOffer = e.target.value;
-  if(DATA){ if(map) drawCircles(); renderWarehouses(); }
+skuSel.addEventListener("change",e=>{
+  selectedOffer=e.target.value;
+  if(DATA){ if(map) drawPins(); renderWarehouses(); }
 });
-sortSel.addEventListener("change", ()=>{ if(DATA && view==="warehouses") renderWarehouses(); });
+sortSel.addEventListener("change",()=>{ if(DATA&&view==="warehouses") renderWarehouses(); });
 </script>
 </body>
 </html>

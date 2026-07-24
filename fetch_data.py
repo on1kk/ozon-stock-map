@@ -103,11 +103,20 @@ def fetch_sales_30d() -> dict:
     return sales
 
 
-def fetch_costs() -> dict:
-    """Артикул -> себестоимость (из опубликованного CSV Google-таблицы)."""
+# Кириллические буквы, неотличимые на глаз от латинских: А-В-Е-К-М-Н-О-Р-С-Т-У-Х
+_LOOKALIKES = str.maketrans("АВЕКМНОРСТУХавекмнорстух", "ABEKMHOPCTYXABEKMHOPCTYX")
+
+
+def norm_art(art: str) -> str:
+    """Нормализация артикула: регистр, пробелы, кириллические двойники латиницы."""
+    return " ".join((art or "").split()).upper().translate(_LOOKALIKES)
+
+
+def fetch_costs() -> tuple:
+    """(норм. артикул -> себестоимость, норм. артикул -> оригинал из таблицы)."""
     with urllib.request.urlopen(COST_CSV_URL, timeout=60) as r:
         text = r.read().decode("utf-8-sig")
-    costs = {}
+    costs, originals = {}, {}
     reader = csv.reader(io.StringIO(text))
     rows = list(reader)
     if not rows:
@@ -128,11 +137,13 @@ def fetch_costs() -> dict:
         if not art or not raw:
             continue
         try:
-            costs[art] = float(raw)
+            key = norm_art(art)
+            costs[key] = float(raw)
+            originals[key] = art
         except ValueError:
             continue
     print(f"Себестоимость: загружено артикулов — {len(costs)}")
-    return costs
+    return costs, originals
 
 
 def main() -> None:
@@ -142,11 +153,12 @@ def main() -> None:
 
     stock_rows = fetch_stock_rows()
     sales = fetch_sales_30d()
-    costs = fetch_costs()
+    costs, cost_originals = fetch_costs()
 
-    warehouses = {}   # name -> данные склада
-    unknown = set()   # нераспознанные склады
-    no_cost = set()   # артикулы без себестоимости
+    warehouses = {}    # name -> данные склада
+    unknown = set()    # нераспознанные склады
+    no_cost = set()    # артикулы без себестоимости
+    seen_offers = set()  # нормализованные артикулы из Ozon (для обратной сверки)
 
     for r in stock_rows:
         wh_name = (r.get("warehouse_name") or "").strip()
@@ -164,7 +176,8 @@ def main() -> None:
         if loc is None:
             unknown.add(wh_name)
 
-        cost = costs.get(offer)
+        seen_offers.add(norm_art(offer))
+        cost = costs.get(norm_art(offer))
         if cost is None:
             no_cost.add(offer)
 
@@ -181,6 +194,7 @@ def main() -> None:
             "lat": loc[0] if loc else None,
             "lon": loc[1] if loc else None,
             "cluster": loc[2] if loc else "Не распознан",
+            "addr": loc[3] if loc else "",
             "stock_value": 0.0, "qty": 0,
             "transit_qty": 0, "transit_value": 0.0,
             "items": [],
@@ -214,6 +228,11 @@ def main() -> None:
         "warehouses": sorted(warehouses.values(), key=lambda w: w["stock_value"], reverse=True),
         "unknown_warehouses": sorted(unknown),
         "offers_without_cost": sorted(no_cost),
+        # артикулы, которые есть в Google-таблице, но не нашлись среди товаров Ozon
+        # (кандидаты на опечатку в таблице)
+        "cost_sheet_unmatched": sorted(
+            cost_originals[k] for k in costs if k not in seen_offers
+        ),
     }
 
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
