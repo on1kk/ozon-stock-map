@@ -169,11 +169,41 @@ def _shape(node, depth=0):
     return type(node).__name__
 
 
+def fetch_wb_cards() -> dict:
+    """Справочник карточек WB: nmID -> (артикул продавца, название).
+    Требует у токена категорию «Контент»."""
+    url = "https://content-api.wildberries.ru/content/v2/get/cards/list"
+    headers = {"Authorization": WB_API_KEY, "Content-Type": "application/json"}
+    cards, cursor = {}, {"limit": 100}
+    while True:
+        d = http_json(url, headers, {"settings": {"cursor": cursor,
+                                                  "filter": {"withPhoto": -1}}})
+        items = (d.get("cards") or [])
+        for c in items:
+            nm = c.get("nmID") or c.get("nmId")
+            if nm:
+                cards[int(nm)] = ((c.get("vendorCode") or "").strip(),
+                                  (c.get("title") or c.get("subjectName") or "").strip())
+        cur = d.get("cursor") or {}
+        if len(items) < 100:
+            break
+        cursor = {"limit": 100, "updatedAt": cur.get("updatedAt"), "nmID": cur.get("nmID")}
+    if not cards:
+        raise RuntimeError("справочник карточек пуст — добавьте токену категорию «Контент»")
+    print(f"WB карточки: {len(cards)}")
+    return cards
+
+
 def fetch_wb_rows() -> list:
-    """Остатки WB: POST /api/analytics/v1/stocks-report/wb-warehouses
-    (токен категории «Аналитика»), офсетная пагинация, гибкий разбор ответа."""
+    """Остатки WB: stocks-report/wb-warehouses (nmId+склад+количество)
+    + справочник карточек для получения артикула продавца."""
     if not WB_API_KEY:
         raise RuntimeError("секрет WB_API_KEY не задан")
+    try:
+        cards = fetch_wb_cards()
+    except Exception as e:
+        raise RuntimeError(f"карточки товаров: {e} — токену WB нужны категории "
+                           f"«Аналитика» и «Контент»")
     url = "https://seller-analytics-api.wildberries.ru/api/analytics/v1/stocks-report/wb-warehouses"
     headers = {"Authorization": WB_API_KEY, "Content-Type": "application/json"}
     PSEUDO = ("В ПУТИ", "ВСЕГО", "TO THE CLIENT", "FROM THE CLIENT", "ИТОГО")
@@ -182,41 +212,35 @@ def fetch_wb_rows() -> list:
         u = (name or "").upper()
         return any(p in u for p in PSEUDO)
 
-    agg, offset, first_shape = {}, 0, None
+    agg, offset = {}, 0
     while True:
         d = http_json(url, headers, {"offset": offset, "limit": 1000})
-        if first_shape is None:
-            first_shape = _shape(d)
         rows = _find_wb_rows(d)
         if not rows:
             break
         for r in rows:
-            art = (r.get("vendorCode") or r.get("supplierArticle") or "").strip()
+            nm = r.get("nmId") or r.get("nmID")
+            art, title = cards.get(int(nm), ("", "")) if nm else ("", "")
+            if not art:
+                art = (r.get("vendorCode") or r.get("supplierArticle") or "").strip()
             if not art:
                 continue
-            subject = (r.get("subjectName") or r.get("subject") or "").strip()
-            name = f"{subject} ({art})" if subject else art
-            whs = r.get("warehouses")
-            for wr in (whs if isinstance(whs, list) else [r]):
-                if not isinstance(wr, dict):
-                    continue
-                wh = (wr.get("warehouseName") or wr.get("warehouse") or "").strip()
-                qty = int(wr.get("quantity") or wr.get("stockCount")
-                          or wr.get("quantityFull") or 0)
-                if not wh or qty <= 0 or is_pseudo(wh):
-                    continue
-                key = (wh, art)
-                if key not in agg:
-                    agg[key] = {"wh": wh, "art": art, "name": name, "qty": 0}
-                agg[key]["qty"] += qty
+            name = f"{title} ({art})" if title else art
+            wh = (r.get("warehouseName") or "").strip()
+            qty = int(r.get("quantity") or 0)
+            if not wh or qty <= 0 or is_pseudo(wh):
+                continue
+            key = (wh, art)
+            if key not in agg:
+                agg[key] = {"wh": wh, "art": art, "name": name, "qty": 0}
+            agg[key]["qty"] += qty
         if len(rows) < 1000:
             break
         offset += len(rows)
     out = list(agg.values())
     if not out:
-        raise RuntimeError(
-            "метод ответил, но строки остатков не распознаны; "
-            f"структура ответа: {first_shape[:600] if first_shape else 'пусто'}")
+        raise RuntimeError("остатки WB пусты после связки с карточками — "
+                           "пришлите лог workflow")
     print(f"WB остатки: позиций склад×товар — {len(out)}")
     return out
 
