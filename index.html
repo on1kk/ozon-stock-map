@@ -28,6 +28,9 @@
 
   .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:8px 22px}
   .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .kpi.click{cursor:pointer;transition:box-shadow .15s,outline .15s}
+  .kpi.click:hover{box-shadow:0 3px 14px rgba(24,21,16,.10)}
+  .kpi.active{outline:3px solid var(--violet)}
   .kpi .l{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
   .kpi .l .chip{color:var(--ozon)}
   .kpi .v{font-size:24px;font-weight:700;margin-top:5px}
@@ -136,10 +139,10 @@
 </header>
 
 <div class="kpis">
-  <div class="kpi"><div class="l"><span class="src-own">◆</span> Свой склад · Центр</div><div class="v num" id="kOwn">—</div><div class="s" id="kOwnSub">под твоим контролем</div></div>
-  <div class="kpi"><div class="l"><span class="src-wb">WB</span> · на складах</div><div class="v num" id="kWb">—</div><div class="s" id="kWbSub">чужая логистика</div></div>
-  <div class="kpi"><div class="l"><span class="src-ozon">Ozon</span> · на складах</div><div class="v num" id="kOzon">—</div><div class="s" id="kOzonSub">чужая логистика</div></div>
-  <div class="kpi black"><div class="l">Всего товарного запаса</div><div class="v num" id="kTotal">—</div><div class="s" id="kTotalSub">по себестоимости</div></div>
+  <div class="kpi click" id="cardOwn"><div class="l"><span class="src-own">◆</span> Свой склад · Центр</div><div class="v num" id="kOwn">—</div><div class="s" id="kOwnSub">под твоим контролем</div></div>
+  <div class="kpi click" id="cardWb"><div class="l"><span class="src-wb">WB</span> · на складах</div><div class="v num" id="kWb">—</div><div class="s" id="kWbSub">чужая логистика</div></div>
+  <div class="kpi click" id="cardOzon"><div class="l"><span class="src-ozon">Ozon</span> · на складах</div><div class="v num" id="kOzon">—</div><div class="s" id="kOzonSub">чужая логистика</div></div>
+  <div class="kpi black click active" id="cardTotal"><div class="l">Всего товарного запаса</div><div class="v num" id="kTotal">—</div><div class="s" id="kTotalSub">по себестоимости</div></div>
   <div class="kpi"><div class="l">Затоварено на Ozon</div><div class="v num" id="kOver">—</div><div class="s" id="kOverSub">запас &gt; 30 дней продаж</div></div>
 </div>
 
@@ -245,6 +248,37 @@ const SRC_LABEL={ozon:"Ozon", wb:"WB", own:"Свой"};
 const SRC_CHIP={ozon:"chip", wb:"chip wb", own:"chip own"};
 function visibleWs(){ return DATA.warehouses.filter(w=>!selectedSrc || w.src===selectedSrc); }
 function itemOf(w){ return w.items.find(i=>i.offer_id===selectedOffer); }
+
+function updateRisk(){
+  const ws=visibleWs();
+  const stock=ws.reduce((s,w)=>s+w.stock_value,0);
+  const top=[...ws].filter(w=>w.stock_value>0).sort((a,b)=>b.stock_value-a.stock_value)[0];
+  const el=document.getElementById("risk");
+  if(!top || stock<=0){ el.style.display="none"; return; }
+  const pct=100*top.stock_value/stock;
+  el.style.display="flex";
+  el.classList.toggle("hi", pct>25);
+  const scope=selectedSrc?` ${SRC_LABEL[selectedSrc]}`:"";
+  document.getElementById("riskText").innerHTML=
+    `Крупнейшая точка риска${scope?" на"+scope:""} — <b>${top.name}</b> (${SRC_LABEL[top.src]||""}${top.addr?", "+top.addr:""}). `+
+    `Потеря этого склада завтра = <b>минус ${fmt(top.stock_value)} ₽</b>. `+
+    (pct>25?`Концентрация выше нормы — стоит разгрузить.`:`Концентрация в пределах нормы.`);
+  document.getElementById("riskPct").innerHTML=
+    `${pct.toLocaleString("ru-RU",{maximumFractionDigits:1})}%<small>стока${scope||""} на одном складе</small>`;
+}
+
+function applySrc(src){
+  selectedSrc=src;
+  document.getElementById("srcFilter").value=src;
+  const ids={own:"cardOwn", wb:"cardWb", ozon:"cardOzon", "":"cardTotal"};
+  ["cardOwn","cardWb","cardOzon","cardTotal"].forEach(id=>
+    document.getElementById(id).classList.toggle("active", id===ids[src]));
+  if(DATA){ updateRisk(); if(map) drawPins(); renderWarehouses(); }
+}
+["cardOwn","cardWb","cardOzon","cardTotal"].forEach(id=>{
+  document.getElementById(id).addEventListener("click",()=>
+    applySrc({cardOwn:"own",cardWb:"wb",cardOzon:"ozon",cardTotal:""}[id]));
+});
 function whValue(w){ return selectedOffer ? (itemOf(w)?.value ?? 0) : w.stock_value; }
 function whQty(w){ return selectedOffer ? (itemOf(w)?.qty ?? 0) : w.qty; }
 function whOver(w){ return selectedOffer ? !!itemOf(w)?.over : w.items.some(i=>i.over); }
@@ -278,19 +312,7 @@ function onData(){
   document.getElementById("updated").textContent=
     new Date(DATA.updated_at).toLocaleString("ru-RU",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
 
-  const top=[...ws].filter(w=>w.stock_value>0).sort((a,b)=>b.stock_value-a.stock_value)[0];
-  if(top && stock>0){
-    const pct=100*top.stock_value/stock;
-    const el=document.getElementById("risk");
-    el.style.display="flex";
-    if(pct>25) el.classList.add("hi");
-    document.getElementById("riskText").innerHTML=
-      `Крупнейшая одиночная точка риска — <b>${top.name}</b> (${SRC_LABEL[top.src]||""}${top.addr?", "+top.addr:""}). `+
-      `Потеря этого склада завтра = <b>минус ${fmt(top.stock_value)} ₽</b> оборотного капитала. `+
-      (pct>25?`Концентрация выше нормы — стоит разгрузить.`:`Концентрация в пределах нормы.`);
-    document.getElementById("riskPct").innerHTML=
-      `${pct.toLocaleString("ru-RU",{maximumFractionDigits:1})}%<small>стока на одном складе</small>`;
-  }
+  updateRisk();
 
   const products=new Map();
   ws.forEach(w=>w.items.forEach(i=>{
@@ -311,7 +333,9 @@ function onData(){
   if(DATA.offers_without_cost?.length)
     msgs.push(`<b class="w-hot">Без себестоимости (${DATA.offers_without_cost.length} арт.):</b> ${DATA.offers_without_cost.slice(0,8).join(", ")}${DATA.offers_without_cost.length>8?"…":""} — допишите их в лист себестоимости`);
   if(DATA.cost_sheet_unmatched?.length)
-    msgs.push(`<b class="w-bl">В таблице, но нет в каталоге Ozon (${DATA.cost_sheet_unmatched.length} арт.):</b> ${DATA.cost_sheet_unmatched.slice(0,8).join(", ")}${DATA.cost_sheet_unmatched.length>8?"…":""} — проверьте написание в листе`);
+    msgs.push(`<b class="w-bl">В Ozon-листе, но нет в каталоге Ozon (${DATA.cost_sheet_unmatched.length} арт.):</b> ${DATA.cost_sheet_unmatched.slice(0,8).join(", ")}${DATA.cost_sheet_unmatched.length>8?"…":""} — проверьте написание`);
+  if(DATA.cost_sheet_unmatched_wb?.length)
+    msgs.push(`<b class="w-bl">В WB-листе, но нет среди товаров WB (${DATA.cost_sheet_unmatched_wb.length} арт.):</b> ${DATA.cost_sheet_unmatched_wb.slice(0,8).join(", ")}${DATA.cost_sheet_unmatched_wb.length>8?"…":""} — проверьте написание`);
   if(msgs.length){
     document.getElementById("warnContent").innerHTML=msgs.join("<br><br>");
     document.getElementById("warnbox").style.display="block";
@@ -457,10 +481,7 @@ function openDetail(w){
     </div>`).join("");
 }
 
-document.getElementById("srcFilter").addEventListener("change",e=>{
-  selectedSrc=e.target.value;
-  if(DATA){ if(map) drawPins(); renderWarehouses(); }
-});
+document.getElementById("srcFilter").addEventListener("change",e=>applySrc(e.target.value));
 skuSel.addEventListener("change",e=>{
   selectedOffer=e.target.value;
   if(DATA){ if(map) drawPins(); renderWarehouses(); }

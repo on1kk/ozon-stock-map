@@ -41,6 +41,7 @@ COST_CSV_URLS = [
 ]
 
 TURNOVER_LIMIT_DAYS = 30
+OWN_STORE_NAME = "Основной склад"
 OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "stocks.json")
 
 OZON_CLIENT_ID = os.environ.get("OZON_CLIENT_ID", "")
@@ -191,63 +192,89 @@ def fetch_wb_rows() -> list:
 # ================= МойСклад =================
 
 def fetch_own_rows() -> list:
-    """Остатки собственного склада из МойСклад: (артикул, название, количество)."""
+    """Остатки ТОЛЬКО основного склада из МойСклад + себестоимость оттуда же.
+    Деньги в МойСклад приходят в копейках — делим на 100."""
     if not MS_TOKEN:
         raise RuntimeError("секрет MOYSKLAD_TOKEN не задан")
-    rows, offset, limit = [], 0, 1000
+    import urllib.parse
     headers = {"Authorization": f"Bearer {MS_TOKEN}",
                "Accept": "application/json;charset=utf-8",
                "User-Agent": "stockmap/1.0"}
+
+    # 1) находим склад по имени
+    flt = urllib.parse.quote(f"name={OWN_STORE_NAME}")
+    d = http_json(f"{MS_API}/entity/store?filter={flt}", headers)
+    stores = d.get("rows") or []
+    if not stores:
+        raise RuntimeError(f"склад «{OWN_STORE_NAME}» не найден в МойСклад")
+    store_href = stores[0]["meta"]["href"]
+
+    # 2) остатки только по этому складу
+    rows, offset, limit = [], 0, 1000
+    store_flt = urllib.parse.quote(f"store={store_href}", safe="")
     while True:
-        d = http_json(f"{MS_API}/report/stock/all?limit={limit}&offset={offset}", headers)
+        d = http_json(f"{MS_API}/report/stock/all?limit={limit}&offset={offset}"
+                      f"&filter={store_flt}", headers)
         part = d.get("rows") or []
         for r in part:
             art = (r.get("article") or r.get("code") or "").strip()
             qty = int(r.get("stock") or 0)
             if not art or qty <= 0:
                 continue
-            rows.append({"art": art, "name": (r.get("name") or art).strip(), "qty": qty})
+            price = r.get("price") or 0  # себестоимость в копейках
+            rows.append({
+                "art": art,
+                "name": (r.get("name") or art).strip(),
+                "qty": qty,
+                "ms_cost": round(price / 100, 2) if price else None,
+            })
         if len(part) < limit:
             break
         offset += limit
-    print(f"МойСклад: позиций — {len(rows)}")
+    total_qty = sum(r["qty"] for r in rows)
+    print(f"МойСклад «{OWN_STORE_NAME}»: позиций — {len(rows)}, штук — {total_qty}")
     return rows
 
 
 # ================= Себестоимость =================
 
-def fetch_costs() -> tuple:
-    """Объединяет все листы себестоимости. Возвращает (норм->цена, норм->оригинал)."""
+def _parse_cost_csv(url: str) -> tuple:
+    with urllib.request.urlopen(url, timeout=60) as r:
+        text = r.read().decode("utf-8-sig")
+    rows = list(csv.reader(io.StringIO(text)))
     costs, originals = {}, {}
-    for url in COST_CSV_URLS:
-        with urllib.request.urlopen(url, timeout=60) as r:
-            text = r.read().decode("utf-8-sig")
-        rows = list(csv.reader(io.StringIO(text)))
-        if not rows:
+    if not rows:
+        return costs, originals
+    header = [h.strip().lower() for h in rows[0]]
+    try:
+        i_art = next(i for i, h in enumerate(header) if "артикул" in h)
+        i_cost = next(i for i, h in enumerate(header) if "себес" in h)
+    except StopIteration:
+        i_art, i_cost = 0, 1
+        rows.insert(0, [])
+    for row in rows[1:]:
+        if len(row) <= max(i_art, i_cost):
             continue
-        header = [h.strip().lower() for h in rows[0]]
+        art = row[i_art].strip()
+        raw = row[i_cost].strip().replace("\xa0", "").replace(" ", "").replace(",", ".")
+        if not art or not raw:
+            continue
         try:
-            i_art = next(i for i, h in enumerate(header) if "артикул" in h)
-            i_cost = next(i for i, h in enumerate(header) if "себес" in h)
-        except StopIteration:
-            i_art, i_cost = 0, 1
-            rows.insert(0, [])
-        for row in rows[1:]:
-            if len(row) <= max(i_art, i_cost):
-                continue
-            art = row[i_art].strip()
-            raw = row[i_cost].strip().replace("\xa0", "").replace(" ", "").replace(",", ".")
-            if not art or not raw:
-                continue
-            try:
-                key = norm_art(art)
-                if key not in costs:  # первый лист в приоритете
-                    costs[key] = float(raw)
-                    originals[key] = art
-            except ValueError:
-                continue
-    print(f"Себестоимость: артикулов (оба листа) — {len(costs)}")
+            key = norm_art(art)
+            if key not in costs:
+                costs[key] = float(raw)
+                originals[key] = art
+        except ValueError:
+            continue
     return costs, originals
+
+
+def fetch_costs() -> tuple:
+    """Возвращает (себесы Ozon-листа, себесы WB-листа) — источники не смешиваются."""
+    oz = _parse_cost_csv(COST_CSV_URLS[0])
+    wb = _parse_cost_csv(COST_CSV_URLS[1])
+    print(f"Себестоимость: Ozon-лист — {len(oz[0])} арт., WB-лист — {len(wb[0])} арт.")
+    return oz, wb
 
 
 # ================= Сборка =================
@@ -258,7 +285,7 @@ def main() -> None:
         sys.exit(1)
 
     source_errors = []
-    costs, cost_originals = fetch_costs()
+    (costs_oz, orig_oz), (costs_wb, orig_wb) = fetch_costs()
 
     ozon_rows = fetch_ozon_stock_rows()
     sales = fetch_ozon_sales_30d()
@@ -285,7 +312,7 @@ def main() -> None:
     warehouses = {}
     unknown = set()
     no_cost = set()
-    seen_offers = set()
+    seen_ozon, seen_wb, seen_own = set(), set(), set()
 
     def wh_entry(src, name, loc):
         key = (src, name)
@@ -302,9 +329,11 @@ def main() -> None:
             }
         return warehouses[key]
 
-    def add_item(w, offer, name, qty, transit, days, over):
-        seen_offers.add(norm_art(offer))
-        cost = costs.get(norm_art(offer))
+    def add_item(w, offer, name, qty, transit, days, over,
+                 cost_map=None, fallback_cost=None):
+        cost = cost_map.get(norm_art(offer)) if cost_map else None
+        if cost is None and fallback_cost:
+            cost = fallback_cost
         if cost is None:
             no_cost.add(offer)
         value = round(qty * cost, 2) if cost is not None else 0.0
@@ -340,16 +369,20 @@ def main() -> None:
         else:
             days = None
             over = qty > 0
+        seen_ozon.add(norm_art(offer))
         add_item(wh_entry("ozon", wh_name, loc),
-                 offer, (r.get("item_name") or offer).strip(), qty, transit, days, over)
+                 offer, (r.get("item_name") or offer).strip(), qty, transit, days, over,
+                 cost_map=costs_oz)
 
     # --- Wildberries (оборачиваемость добавим следующим шагом) ---
     for r in wb_rows:
         loc = locate_wb(r["wh"])
         if loc is None:
             unknown.add(f"WB: {r['wh']}")
+        seen_wb.add(norm_art(r["art"]))
         add_item(wh_entry("wb", r["wh"], loc),
-                 r["art"], r["name"], r["qty"], 0, None, False)
+                 r["art"], r["name"], r["qty"], 0, None, False,
+                 cost_map=costs_wb)
 
     # --- Собственный склад ---
     if own_rows:
@@ -357,15 +390,15 @@ def main() -> None:
         w = wh_entry("own", own["name"],
                      (own["lat"], own["lon"], own["cluster"], own["addr"]))
         for r in own_rows:
-            add_item(w, r["art"], r["name"], r["qty"], 0, None, False)
+            seen_own.add(norm_art(r["art"]))
+            add_item(w, r["art"], r["name"], r["qty"], 0, None, False,
+                     fallback_cost=r.get("ms_cost"))
 
     for w in warehouses.values():
         w["stock_value"] = round(w["stock_value"], 2)
         w["transit_value"] = round(w["transit_value"], 2)
         w["items"].sort(key=lambda i: i["value"], reverse=True)
 
-    # для сверки листа себестоимости: каталог Ozon + всё, что видели в WB и МойСклад
-    known_offers = catalog | seen_offers
 
     out = {
         "updated_at": dt.datetime.now(dt.timezone(dt.timedelta(hours=3))).isoformat(timespec="minutes"),
@@ -374,7 +407,9 @@ def main() -> None:
         "unknown_warehouses": sorted(unknown),
         "offers_without_cost": sorted(no_cost),
         "cost_sheet_unmatched": sorted(
-            cost_originals[k] for k in costs if k not in known_offers),
+            orig_oz[k] for k in costs_oz if k not in (catalog | seen_ozon)),
+        "cost_sheet_unmatched_wb": sorted(
+            orig_wb[k] for k in costs_wb if k not in seen_wb) if wb_rows else [],
         "source_errors": source_errors,
     }
 
