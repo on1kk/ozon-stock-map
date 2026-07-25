@@ -242,7 +242,8 @@ def fetch_wb_rows() -> list:
         raise RuntimeError("остатки WB пусты после связки с карточками — "
                            "пришлите лог workflow")
     print(f"WB остатки: позиций склад×товар — {len(out)}")
-    return out
+    wb_catalog = {norm_art(vc) for vc, _ in cards.values() if vc}
+    return out, wb_catalog
 
 
 # ================= МойСклад =================
@@ -352,11 +353,11 @@ def main() -> None:
         catalog = set()
 
     try:
-        wb_rows = fetch_wb_rows()
+        wb_rows, wb_catalog = fetch_wb_rows()
     except Exception as e:
         source_errors.append(f"Wildberries: {e}")
         print(f"WB пропущен: {e}", file=sys.stderr)
-        wb_rows = []
+        wb_rows, wb_catalog = [], set()
 
     try:
         own_rows = fetch_own_rows()
@@ -465,7 +466,7 @@ def main() -> None:
         "cost_sheet_unmatched": sorted(
             orig_oz[k] for k in costs_oz if k not in (catalog | seen_ozon)),
         "cost_sheet_unmatched_wb": sorted(
-            orig_wb[k] for k in costs_wb if k not in seen_wb) if wb_rows else [],
+            orig_wb[k] for k in costs_wb if k not in wb_catalog) if wb_catalog else [],
         "source_errors": source_errors,
     }
 
