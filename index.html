@@ -26,12 +26,17 @@
   .updated{margin-left:auto;font-size:12px;color:var(--muted)}
   .updated b{color:var(--green);font-weight:500}
 
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:8px 22px}
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:8px 22px}
   .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
   .kpi .l{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
   .kpi .l .chip{color:var(--ozon)}
   .kpi .v{font-size:24px;font-weight:700;margin-top:5px}
   .kpi .s{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .src-ozon{color:#005BFF;font-weight:700}
+  .src-wb{color:#7D3FC7;font-weight:700}
+  .src-own{color:#171410;font-weight:700}
+  .chip.wb{background:#7D3FC7}
+  .chip.own{background:#171410}
   .kpi.black{background:var(--black-card);border-color:var(--black-card);color:#F4EFE6}
   .kpi.black .l,.kpi.black .s{color:#9d9585}
   .kpi.black .v{color:#fff}
@@ -131,10 +136,11 @@
 </header>
 
 <div class="kpis">
-  <div class="kpi"><div class="l"><span class="chip">Ozon</span> · Сток на складах</div><div class="v num" id="kStock">—</div><div class="s" id="kStockSub">по себестоимости</div></div>
-  <div class="kpi"><div class="l">В пути на склады</div><div class="v num" id="kTransit">—</div><div class="s" id="kTransitSub">едет в поставках</div></div>
-  <div class="kpi"><div class="l">Единиц товара</div><div class="v num" id="kQty">—</div><div class="s" id="kQtySub">на всех складах</div></div>
-  <div class="kpi black"><div class="l">Затоварено</div><div class="v num" id="kOver">—</div><div class="s" id="kOverSub">запас &gt; 30 дней продаж</div></div>
+  <div class="kpi"><div class="l"><span class="src-own">◆</span> Свой склад · Центр</div><div class="v num" id="kOwn">—</div><div class="s" id="kOwnSub">под твоим контролем</div></div>
+  <div class="kpi"><div class="l"><span class="src-wb">WB</span> · на складах</div><div class="v num" id="kWb">—</div><div class="s" id="kWbSub">чужая логистика</div></div>
+  <div class="kpi"><div class="l"><span class="src-ozon">Ozon</span> · на складах</div><div class="v num" id="kOzon">—</div><div class="s" id="kOzonSub">чужая логистика</div></div>
+  <div class="kpi black"><div class="l">Всего товарного запаса</div><div class="v num" id="kTotal">—</div><div class="s" id="kTotalSub">по себестоимости</div></div>
+  <div class="kpi"><div class="l">Затоварено на Ozon</div><div class="v num" id="kOver">—</div><div class="s" id="kOverSub">запас &gt; 30 дней продаж</div></div>
 </div>
 
 <div class="risk" id="risk" style="display:none">
@@ -143,6 +149,13 @@
 </div>
 
 <div class="controls">
+  <label>Площадка:</label>
+  <select id="srcFilter">
+    <option value="">Все</option>
+    <option value="ozon">Ozon</option>
+    <option value="wb">Wildberries</option>
+    <option value="own">Мой склад</option>
+  </select>
   <label>Товар:</label>
   <select id="skuFilter"><option value="">Все товары</option></select>
   <label>Сортировка:</label>
@@ -195,7 +208,7 @@ function heat(t){
 }
 const heatText = t => t > 0.42 ? "#FFFFFF" : "#3A2A10";
 
-let DATA=null, map=null, pins=[], selectedOffer="", view="warehouses", lastZoom=null;
+let DATA=null, map=null, pins=[], selectedOffer="", selectedSrc="", view="warehouses", lastZoom=null;
 
 const listEl=document.getElementById("list"), titleEl=document.getElementById("asideTitle"),
       subEl=document.getElementById("asideSub"), headEl=document.getElementById("asideHead"),
@@ -228,6 +241,9 @@ ys.onload=()=>ymaps.ready(()=>{
 });
 document.head.appendChild(ys);
 
+const SRC_LABEL={ozon:"Ozon", wb:"WB", own:"Свой"};
+const SRC_CHIP={ozon:"chip", wb:"chip wb", own:"chip own"};
+function visibleWs(){ return DATA.warehouses.filter(w=>!selectedSrc || w.src===selectedSrc); }
 function itemOf(w){ return w.items.find(i=>i.offer_id===selectedOffer); }
 function whValue(w){ return selectedOffer ? (itemOf(w)?.value ?? 0) : w.stock_value; }
 function whQty(w){ return selectedOffer ? (itemOf(w)?.qty ?? 0) : w.qty; }
@@ -236,22 +252,29 @@ function whOver(w){ return selectedOffer ? !!itemOf(w)?.over : w.items.some(i=>i
 function onData(){
   overlay.style.display="none";
   const ws=DATA.warehouses;
-  const stock=ws.reduce((s,w)=>s+w.stock_value,0);
-  const transit=ws.reduce((s,w)=>s+w.transit_value,0);
-  const transitQ=ws.reduce((s,w)=>s+w.transit_qty,0);
-  const qty=ws.reduce((s,w)=>s+w.qty,0);
-  const overSum=ws.reduce((s,w)=>s+w.items.filter(i=>i.over).reduce((a,i)=>a+i.value,0),0);
-  const overCnt=ws.reduce((s,w)=>s+w.items.filter(i=>i.over).length,0);
+  const sum=(arr,f)=>arr.reduce((s,w)=>s+f(w),0);
+  const bySrc=src=>ws.filter(w=>w.src===src);
+  const vOwn=sum(bySrc("own"),w=>w.stock_value), qOwn=sum(bySrc("own"),w=>w.qty);
+  const vWb =sum(bySrc("wb"), w=>w.stock_value), qWb =sum(bySrc("wb"), w=>w.qty);
+  const vOz =sum(bySrc("ozon"),w=>w.stock_value), qOz=sum(bySrc("ozon"),w=>w.qty);
+  const stock=vOwn+vWb+vOz;
+  const qty=qOwn+qWb+qOz;
+  const pc=v=>stock?Math.round(100*v/stock):0;
+  const overSum=sum(bySrc("ozon"),w=>w.items.filter(i=>i.over).reduce((a,i)=>a+i.value,0));
+  const overCnt=sum(bySrc("ozon"),w=>w.items.filter(i=>i.over).length);
+  const transitQ=sum(ws,w=>w.transit_qty), transitV=sum(ws,w=>w.transit_value);
 
-  document.getElementById("kStock").textContent=fmtR(stock);
-  document.getElementById("kStockSub").textContent=`по себестоимости · ${ws.filter(w=>w.lat).length} складов`;
-  document.getElementById("kTransit").textContent=fmtR(transit);
-  document.getElementById("kTransitSub").textContent=`${fmt(transitQ)} шт едет в поставках`;
-  document.getElementById("kQty").textContent=fmt(qty)+" шт";
-  document.getElementById("kQtySub").textContent=`на ${ws.length} складах и точках`;
+  document.getElementById("kOwn").textContent=fmtR(vOwn);
+  document.getElementById("kOwnSub").textContent=`${pc(vOwn)}% запаса · ${fmt(qOwn)} шт · под твоим контролем`;
+  document.getElementById("kWb").textContent=fmtR(vWb);
+  document.getElementById("kWbSub").textContent=`${pc(vWb)}% запаса · ${fmt(qWb)} шт · ${bySrc("wb").length} складов`;
+  document.getElementById("kOzon").textContent=fmtR(vOz);
+  document.getElementById("kOzonSub").textContent=`${pc(vOz)}% запаса · ${fmt(qOz)} шт · ${bySrc("ozon").length} складов`+(transitQ?` · в пути ${fmtR(transitV)}`:"");
+  document.getElementById("kTotal").textContent=fmtR(stock);
+  document.getElementById("kTotalSub").textContent=`${fmt(qty)} шт · ${pc(vWb+vOz)}% запаса вне твоих стен`;
   document.getElementById("kOver").textContent=fmtR(overSum);
   document.getElementById("kOverSub").textContent=
-    `${overCnt} позиций · ${stock?Math.round(100*overSum/stock):0}% стока · запас > ${DATA.turnover_limit_days} дн`;
+    `${overCnt} позиций · запас > ${DATA.turnover_limit_days} дн продаж`;
   document.getElementById("updated").textContent=
     new Date(DATA.updated_at).toLocaleString("ru-RU",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
 
@@ -262,7 +285,7 @@ function onData(){
     el.style.display="flex";
     if(pct>25) el.classList.add("hi");
     document.getElementById("riskText").innerHTML=
-      `Крупнейшая одиночная точка риска — <b>${top.name}</b>${top.addr?` (${top.addr})`:""}. `+
+      `Крупнейшая одиночная точка риска — <b>${top.name}</b> (${SRC_LABEL[top.src]||""}${top.addr?", "+top.addr:""}). `+
       `Потеря этого склада завтра = <b>минус ${fmt(top.stock_value)} ₽</b> оборотного капитала. `+
       (pct>25?`Концентрация выше нормы — стоит разгрузить.`:`Концентрация в пределах нормы.`);
     document.getElementById("riskPct").innerHTML=
@@ -281,6 +304,8 @@ function onData(){
   });
 
   const msgs=[];
+  if(DATA.source_errors?.length)
+    msgs.push(`<b class="w-hot">Источник недоступен:</b> ${DATA.source_errors.join("; ")} — проверьте секреты в GitHub`);
   if(DATA.unknown_warehouses?.length)
     msgs.push(`<b class="w-or">Нераспознанные склады (${DATA.unknown_warehouses.length}):</b> ${DATA.unknown_warehouses.join(", ")} — добавьте их в warehouses.py`);
   if(DATA.offers_without_cost?.length)
@@ -314,7 +339,7 @@ const CANDIDATES = labelCandidates();
 function drawPins(){
   pins.forEach(p=>map.geoObjects.remove(p));
   pins=[];
-  const ws=DATA.warehouses.filter(w=>w.lat && whQty(w)>0);
+  const ws=visibleWs().filter(w=>w.lat && whQty(w)>0);
   if(!ws.length) return;
 
   const zoom=map.getZoom();
@@ -332,6 +357,7 @@ function drawPins(){
     const w=p.w, v=whValue(w), q=whQty(w), over=whOver(w);
     const t=Math.sqrt(v/maxV);
     const bg=heat(t), fg=heatText(t);
+    const border={ozon:"#FFFFFF", wb:"#7D3FC7", own:"#171410"}[w.src]||"#FFFFFF";
     const label=(over?"⚠ ":"")+shortName(w.name)+" · "+fmtPin(Math.max(v,1));
     const pw=pillW(label);
 
@@ -349,7 +375,7 @@ function drawPins(){
       `<div class="pinw">
          <div class="ln" style="width:${len.toFixed(0)}px;transform:rotate(${ang.toFixed(1)}deg)"></div>
          <div class="dot" style="background:${bg}"></div>
-         <div class="pill" style="left:${dx.toFixed(0)}px;top:${dy.toFixed(0)}px;background:${bg};color:${fg}">${label}</div>
+         <div class="pill" style="left:${dx.toFixed(0)}px;top:${dy.toFixed(0)}px;background:${bg};color:${fg};border-color:${border}">${label}</div>
        </div>`);
     const pm=new ymaps.Placemark([w.lat,w.lon],
       {hintContent:`${w.name} — ${fmtR(v)} · ${fmt(q)} шт`},
@@ -371,7 +397,7 @@ function renderWarehouses(){
   subEl.textContent=selectedOffer?(skuSel.selectedOptions[0]?.textContent||""):"клик — состав товаров на складе";
 
   const key=sortSel.value;
-  const arr=DATA.warehouses.map(w=>({w,v:whValue(w),q:whQty(w)}))
+  const arr=visibleWs().map(w=>({w,v:whValue(w),q:whQty(w)}))
     .filter(x=>x.q>0)
     .sort((a,b)=>key==="qty"?b.q-a.q:b.v-a.v);
   const total=arr.reduce((s,x)=>s+x.v,0)||1;
@@ -383,7 +409,7 @@ function renderWarehouses(){
     const t=Math.sqrt(Math.max(x.v,1)/maxV);
     return `
     <div class="row" data-wh="${x.w.name}">
-      <span class="chip">Ozon</span>
+      <span class="${SRC_CHIP[x.w.src]||'chip'}">${SRC_LABEL[x.w.src]||'Ozon'}</span>
       <div><div class="name">${x.w.name}
           ${overN?`<span class="tag over">затовар ×${overN}</span>`:""}
           ${nocost?'<span class="tag nocost">нет с/с</span>':""}
@@ -396,7 +422,7 @@ function renderWarehouses(){
 
   listEl.querySelectorAll(".row").forEach(r=>{
     r.addEventListener("click",()=>{
-      const w=DATA.warehouses.find(w=>w.name===r.dataset.wh);
+      const w=DATA.warehouses.find(w=>w.name===r.dataset.wh && (!selectedSrc||w.src===selectedSrc));
       if(map&&w.lat) map.setCenter([w.lat,w.lon],8,{duration:400});
       openDetail(w);
     });
@@ -409,7 +435,7 @@ function openDetail(w){
   if(window.matchMedia("(max-width:900px)").matches)
     setTimeout(()=>headEl.scrollIntoView({behavior:"smooth"}),150);
   titleEl.textContent=w.name;
-  subEl.textContent=`${w.addr||w.cluster} · ${fmtR(w.stock_value)} · ${fmt(w.qty)} шт`;
+  subEl.textContent=`${SRC_LABEL[w.src]||""} · ${w.addr||w.cluster} · ${fmtR(w.stock_value)} · ${fmt(w.qty)} шт`;
   if(!headEl.querySelector(".back")){
     const b=document.createElement("button");
     b.className="back"; b.textContent="← Все склады";
@@ -424,13 +450,17 @@ function openDetail(w){
       <div><div class="name">${it.name}
           ${it.over?'<span class="tag over">затовар</span>':""}
           ${it.nocost?'<span class="tag nocost">нет с/с</span>':""}</div>
-        <div class="sub">${it.offer_id}${it.cost!=null?` · с/с ${fmt(it.cost)} ₽`:""} · запас: ${it.days===null?"нет продаж 30 дн":it.days+" дн"}${it.transit?` · в пути ${fmt(it.transit)} шт`:""}</div></div>
+        <div class="sub">${it.offer_id}${it.cost!=null?` · с/с ${fmt(it.cost)} ₽`:""}${w.src==="ozon"?` · запас: ${it.days===null?"нет продаж 30 дн":it.days+" дн"}`:""}${it.transit?` · в пути ${fmt(it.transit)} шт`:""}</div></div>
       <div class="money"><div class="val num">${it.nocost?"—":fmt(it.value)+" ₽"}</div>
         <div class="share num">${fmt(it.qty)} шт</div></div>
       <div class="bar"><i style="width:${(100*Math.max(it.value,1)/maxV).toFixed(1)}%;background:${it.over?"linear-gradient(90deg,var(--orange),var(--hot))":"linear-gradient(90deg,var(--violet),var(--blue))"}"></i></div>
     </div>`).join("");
 }
 
+document.getElementById("srcFilter").addEventListener("change",e=>{
+  selectedSrc=e.target.value;
+  if(DATA){ if(map) drawPins(); renderWarehouses(); }
+});
 skuSel.addEventListener("change",e=>{
   selectedOffer=e.target.value;
   if(DATA){ if(map) drawPins(); renderWarehouses(); }

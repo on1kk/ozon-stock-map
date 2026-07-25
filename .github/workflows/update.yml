@@ -22,6 +22,8 @@ jobs:
         env:
           OZON_CLIENT_ID: ${{ secrets.OZON_CLIENT_ID }}
           OZON_API_KEY: ${{ secrets.OZON_API_KEY }}
+          WB_API_KEY: ${{ secrets.WB_API_KEY }}
+          MOYSKLAD_TOKEN: ${{ secrets.MOYSKLAD_TOKEN }}
         run: python fetch_data.py
 
       - name: Публикация data/stocks.json
