@@ -14,6 +14,7 @@ WB_API_KEY, MOYSKLAD_TOKEN — опциональные (без них исто�
 """
 
 import csv
+import gzip
 import io
 import json
 import os
@@ -56,14 +57,21 @@ def norm_art(art: str) -> str:
 
 def http_json(url: str, headers: dict, payload: dict | None = None) -> dict | list:
     data = json.dumps(payload).encode("utf-8") if payload is not None else None
+    headers = {**headers, "Accept-Encoding": "gzip"}
     req = urllib.request.Request(url, data=data, headers=headers,
                                  method="POST" if payload is not None else "GET")
     try:
         with urllib.request.urlopen(req, timeout=120) as r:
-            return json.loads(r.read().decode("utf-8"))
+            raw = r.read()
+            if r.headers.get("Content-Encoding") == "gzip":
+                raw = gzip.decompress(raw)
+            return json.loads(raw.decode("utf-8"))
     except urllib.error.HTTPError as e:
-        body = e.read().decode("utf-8", "replace")[:500]
-        raise RuntimeError(f"HTTP {e.code} {url.split('?')[0]}: {body}")
+        raw = e.read()
+        if e.headers.get("Content-Encoding") == "gzip":
+            try: raw = gzip.decompress(raw)
+            except OSError: pass
+        raise RuntimeError(f"HTTP {e.code} {url.split('?')[0]}: {raw.decode('utf-8','replace')[:400]}")
 
 
 def ozon(path: str, payload: dict) -> dict:
@@ -130,29 +138,54 @@ def fetch_ozon_catalog() -> set:
 # ================= Wildberries =================
 
 def fetch_wb_rows() -> list:
-    """Остатки WB: список (склад, артикул, название, количество)."""
+    """Остатки WB через новый метод аналитики (токен категории «Аналитика»).
+    POST /api/analytics/v1/stocks-report/wb-warehouses, офсетная пагинация."""
     if not WB_API_KEY:
         raise RuntimeError("секрет WB_API_KEY не задан")
-    data = http_json(WB_API + "/api/v1/supplier/stocks?dateFrom=2020-01-01T00:00:00",
-                     {"Authorization": WB_API_KEY})
-    if not isinstance(data, list):
-        raise RuntimeError(f"неожиданный ответ WB: {str(data)[:200]}")
-    agg = {}
-    for r in data:
-        wh = (r.get("warehouseName") or "").strip()
-        art = (r.get("supplierArticle") or "").strip()
-        qty = int(r.get("quantity") or 0)
-        if not wh or not art or qty <= 0:
-            continue
-        subject = (r.get("subject") or "").strip()
-        name = f"{subject} ({art})" if subject else art
-        key = (wh, art)
-        if key not in agg:
-            agg[key] = {"wh": wh, "art": art, "name": name, "qty": 0}
-        agg[key]["qty"] += qty
-    rows = list(agg.values())
-    print(f"WB остатки: позиций склад×товар — {len(rows)}")
-    return rows
+    url = "https://seller-analytics-api.wildberries.ru/api/analytics/v1/stocks-report/wb-warehouses"
+    headers = {"Authorization": WB_API_KEY, "Content-Type": "application/json"}
+    PSEUDO = ("В ПУТИ", "ВСЕГО", "TO THE CLIENT", "FROM THE CLIENT", "ИТОГО")
+
+    def is_pseudo(name: str) -> bool:
+        u = (name or "").upper()
+        return any(p in u for p in PSEUDO)
+
+    agg, offset = {}, 0
+    while True:
+        d = http_json(url, headers, {"offset": offset, "limit": 1000})
+        # ответ разбираем гибко: строки могут лежать в data/items/report
+        rows = d
+        if isinstance(d, dict):
+            rows = d.get("data") or d.get("items") or d.get("report") or []
+            if isinstance(rows, dict):
+                rows = rows.get("items") or rows.get("rows") or []
+        if not isinstance(rows, list) or not rows:
+            break
+        for r in rows:
+            art = (r.get("vendorCode") or r.get("supplierArticle") or "").strip()
+            if not art:
+                continue
+            subject = (r.get("subjectName") or r.get("subject") or "").strip()
+            name = f"{subject} ({art})" if subject else art
+            whs = r.get("warehouses")
+            flat = [] if isinstance(whs, list) else [r]
+            for wr in (whs if isinstance(whs, list) else flat):
+                wh = (wr.get("warehouseName") or wr.get("warehouse") or "").strip()
+                qty = int(wr.get("quantity") or wr.get("stockCount") or 0)
+                if not wh or qty <= 0 or is_pseudo(wh):
+                    continue
+                key = (wh, art)
+                if key not in agg:
+                    agg[key] = {"wh": wh, "art": art, "name": name, "qty": 0}
+                agg[key]["qty"] += qty
+        if len(rows) < 1000:
+            break
+        offset += len(rows)
+    out = list(agg.values())
+    if not out:
+        raise RuntimeError("метод ответил, но остатков не вернул — проверьте, что токен категории «Аналитика»")
+    print(f"WB остатки: позиций склад×товар — {len(out)}")
+    return out
 
 
 # ================= МойСклад =================
@@ -163,7 +196,8 @@ def fetch_own_rows() -> list:
         raise RuntimeError("секрет MOYSKLAD_TOKEN не задан")
     rows, offset, limit = [], 0, 1000
     headers = {"Authorization": f"Bearer {MS_TOKEN}",
-               "Accept": "application/json;charset=utf-8"}
+               "Accept": "application/json;charset=utf-8",
+               "User-Agent": "stockmap/1.0"}
     while True:
         d = http_json(f"{MS_API}/report/stock/all?limit={limit}&offset={offset}", headers)
         part = d.get("rows") or []
