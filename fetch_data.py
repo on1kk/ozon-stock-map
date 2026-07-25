@@ -138,9 +138,40 @@ def fetch_ozon_catalog() -> set:
 
 # ================= Wildberries =================
 
+def _find_wb_rows(node, depth=0):
+    """Рекурсивно ищет в ответе WB список строк с товарными полями."""
+    if depth > 6:
+        return None
+    if isinstance(node, list):
+        if node and isinstance(node[0], dict) and any(
+                k in node[0] for k in ("vendorCode", "supplierArticle", "nmID", "nmId")):
+            return node
+        for x in node:
+            r = _find_wb_rows(x, depth + 1)
+            if r:
+                return r
+    elif isinstance(node, dict):
+        for v in node.values():
+            r = _find_wb_rows(v, depth + 1)
+            if r:
+                return r
+    return None
+
+
+def _shape(node, depth=0):
+    """Краткое описание структуры ответа — для диагностики в логе."""
+    if depth > 3:
+        return "…"
+    if isinstance(node, dict):
+        return "{" + ", ".join(f"{k}: {_shape(v, depth+1)}" for k, v in list(node.items())[:8]) + "}"
+    if isinstance(node, list):
+        return f"[{len(node)} шт: {_shape(node[0], depth+1) if node else ''}]"
+    return type(node).__name__
+
+
 def fetch_wb_rows() -> list:
-    """Остатки WB через новый метод аналитики (токен категории «Аналитика»).
-    POST /api/analytics/v1/stocks-report/wb-warehouses, офсетная пагинация."""
+    """Остатки WB: POST /api/analytics/v1/stocks-report/wb-warehouses
+    (токен категории «Аналитика»), офсетная пагинация, гибкий разбор ответа."""
     if not WB_API_KEY:
         raise RuntimeError("секрет WB_API_KEY не задан")
     url = "https://seller-analytics-api.wildberries.ru/api/analytics/v1/stocks-report/wb-warehouses"
@@ -151,16 +182,13 @@ def fetch_wb_rows() -> list:
         u = (name or "").upper()
         return any(p in u for p in PSEUDO)
 
-    agg, offset = {}, 0
+    agg, offset, first_shape = {}, 0, None
     while True:
         d = http_json(url, headers, {"offset": offset, "limit": 1000})
-        # ответ разбираем гибко: строки могут лежать в data/items/report
-        rows = d
-        if isinstance(d, dict):
-            rows = d.get("data") or d.get("items") or d.get("report") or []
-            if isinstance(rows, dict):
-                rows = rows.get("items") or rows.get("rows") or []
-        if not isinstance(rows, list) or not rows:
+        if first_shape is None:
+            first_shape = _shape(d)
+        rows = _find_wb_rows(d)
+        if not rows:
             break
         for r in rows:
             art = (r.get("vendorCode") or r.get("supplierArticle") or "").strip()
@@ -169,10 +197,12 @@ def fetch_wb_rows() -> list:
             subject = (r.get("subjectName") or r.get("subject") or "").strip()
             name = f"{subject} ({art})" if subject else art
             whs = r.get("warehouses")
-            flat = [] if isinstance(whs, list) else [r]
-            for wr in (whs if isinstance(whs, list) else flat):
+            for wr in (whs if isinstance(whs, list) else [r]):
+                if not isinstance(wr, dict):
+                    continue
                 wh = (wr.get("warehouseName") or wr.get("warehouse") or "").strip()
-                qty = int(wr.get("quantity") or wr.get("stockCount") or 0)
+                qty = int(wr.get("quantity") or wr.get("stockCount")
+                          or wr.get("quantityFull") or 0)
                 if not wh or qty <= 0 or is_pseudo(wh):
                     continue
                 key = (wh, art)
@@ -184,7 +214,9 @@ def fetch_wb_rows() -> list:
         offset += len(rows)
     out = list(agg.values())
     if not out:
-        raise RuntimeError("метод ответил, но остатков не вернул — проверьте, что токен категории «Аналитика»")
+        raise RuntimeError(
+            "метод ответил, но строки остатков не распознаны; "
+            f"структура ответа: {first_shape[:600] if first_shape else 'пусто'}")
     print(f"WB остатки: позиций склад×товар — {len(out)}")
     return out
 
