@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-08-18T23:29+03:00",
+ "updated_at": "2026-08-19T00:28+03:00",
  "turnover_limit_days": 30,
  "warehouses": [
   {
@@ -32,7 +32,7 @@
      "transit": 0,
      "cost": 1043.0,
      "value": 40677.0,
-     "days": 6.8,
+     "days": 6.7,
      "over": false,
      "nocost": false
     },
@@ -351,7 +351,7 @@
      "transit": 0,
      "cost": 213.0,
      "value": 7242.0,
-     "days": 7.0,
+     "days": 6.9,
      "over": false,
      "nocost": false
     },
@@ -936,8 +936,8 @@
    "lon": 55.097,
    "cluster": "Оренбург",
    "addr": "г. Оренбург",
-   "stock_value": 641568.0,
-   "qty": 3923,
+   "stock_value": 641968.0,
+   "qty": 3924,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
@@ -1120,11 +1120,11 @@
     {
      "offer_id": "SKY_KEY_SL01_SET",
      "name": "Беспроводная клавиатура и мышь Bluetooth",
-     "qty": 31,
+     "qty": 32,
      "transit": 0,
      "cost": 400.0,
-     "value": 12400.0,
-     "days": 2.0,
+     "value": 12800.0,
+     "days": 2.1,
      "over": false,
      "nocost": false
     },
@@ -1808,10 +1808,10 @@
    "lon": 38.163,
    "cluster": "Москва, МО и Дальние регионы",
    "addr": "Индустриальный парк «Софьино», Раменский г.о.",
-   "stock_value": 626421.0,
-   "qty": 4269,
-   "transit_qty": 0,
-   "transit_value": 0.0,
+   "stock_value": 624274.0,
+   "qty": 4250,
+   "transit_qty": 1504,
+   "transit_value": 366448.0,
    "items": [
     {
      "offer_id": "Camping_shower",
@@ -1838,10 +1838,10 @@
     {
      "offer_id": "Gorelka_Gold",
      "name": "Туристическая насадка горелка с пьезоподжигом",
-     "qty": 526,
+     "qty": 521,
      "transit": 0,
      "cost": 98.0,
-     "value": 51548.0,
+     "value": 51058.0,
      "days": 1.2,
      "over": false,
      "nocost": false
@@ -1849,10 +1849,10 @@
     {
      "offer_id": "mat_romashka6",
      "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
-     "qty": 774,
+     "qty": 772,
      "transit": 0,
      "cost": 65.0,
-     "value": 50310.0,
+     "value": 50180.0,
      "days": 3.7,
      "over": false,
      "nocost": false
@@ -1872,7 +1872,7 @@
      "offer_id": "turstul_black",
      "name": "Стул складной туристический со спинкой и подлокотниками SOGOOD черный",
      "qty": 67,
-     "transit": 0,
+     "transit": 64,
      "cost": 412.0,
      "value": 27604.0,
      "days": 2.4,
@@ -1882,10 +1882,10 @@
     {
      "offer_id": "Oil_Silver_2",
      "name": "Распылитель для масла 100 мл 2 шт, цвет серебристый",
-     "qty": 308,
+     "qty": 305,
      "transit": 0,
      "cost": 76.0,
-     "value": 23408.0,
+     "value": 23180.0,
      "days": 1.2,
      "over": false,
      "nocost": false
@@ -1959,10 +1959,10 @@
     {
      "offer_id": "EotMini-Gray",
      "name": "Ручной измельчитель, серый,200 мл / Механический измельчитель",
-     "qty": 133,
+     "qty": 132,
      "transit": 0,
      "cost": 95.0,
-     "value": 12635.0,
+     "value": 12540.0,
      "days": 2.7,
      "over": false,
      "nocost": false
@@ -1993,21 +1993,10 @@
      "offer_id": "plitka809",
      "name": "Газовая плита туристическая SOGOOD, портативная походная газовая плитка с пьезоподжигом, кейсом и переходником для баллона",
      "qty": 16,
-     "transit": 0,
+     "transit": 40,
      "cost": 630.0,
      "value": 10080.0,
      "days": 2.4,
-     "over": false,
-     "nocost": false
-    },
-    {
-     "offer_id": "OilSpray_B",
-     "name": "Распылитель для масла, дозатор для масла с распылителем 210 мл черный",
-     "qty": 121,
-     "transit": 0,
-     "cost": 77.0,
-     "value": 9317.0,
-     "days": 1.3,
      "over": false,
      "nocost": false
     },
@@ -2019,6 +2008,17 @@
      "cost": 1162.0,
      "value": 9296.0,
      "days": 1.8,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "OilSpray_B",
+     "name": "Распылитель для масла, дозатор для масла с распылителем 210 мл черный",
+     "qty": 120,
+     "transit": 0,
+     "cost": 77.0,
+     "value": 9240.0,
+     "days": 1.3,
      "over": false,
      "nocost": false
     },
@@ -2095,7 +2095,7 @@
      "transit": 0,
      "cost": 213.0,
      "value": 7455.0,
-     "days": 7.2,
+     "days": 7.1,
      "over": false,
      "nocost": false
     },
@@ -2114,7 +2114,7 @@
      "offer_id": "Moskit100x210_brown",
      "name": "Москитная сетка на дверь на магнитах, штора от комаров, антимоскитная сетка на балкон от насекомых, для дачи и сада SOGOOD 100х210 коричневая",
      "qty": 86,
-     "transit": 0,
+     "transit": 4,
      "cost": 80.0,
      "value": 6880.0,
      "days": 1.9,
@@ -2146,22 +2146,22 @@
     {
      "offer_id": "P47GREEN",
      "name": "Беспроводные наушники накладные, зеленые с микрофоном, Bluetooth 5.0",
-     "qty": 44,
-     "transit": 0,
+     "qty": 42,
+     "transit": 20,
      "cost": 130.0,
-     "value": 5720.0,
-     "days": 2.3,
+     "value": 5460.0,
+     "days": 2.2,
      "over": false,
      "nocost": false
     },
     {
      "offer_id": "sekator_hd",
      "name": "Секатор садовый профессиональный ручной, для цветов и деревьев, сучкорез для дачи",
-     "qty": 47,
-     "transit": 0,
+     "qty": 46,
+     "transit": 120,
      "cost": 115.0,
-     "value": 5405.0,
-     "days": 0.8,
+     "value": 5290.0,
+     "days": 0.7,
      "over": false,
      "nocost": false
     },
@@ -2224,7 +2224,7 @@
      "offer_id": "ProJuicB",
      "name": "Соковыжималка механическая, цитрусовый пресс.",
      "qty": 2,
-     "transit": 0,
+     "transit": 5,
      "cost": 1855.0,
      "value": 3710.0,
      "days": 0.8,
@@ -2268,7 +2268,7 @@
      "offer_id": "AquaFan_White",
      "name": "Вентилятор настольный мини кондиционер с увлажнителем, портативный USB, от сети, бесшумный охладитель воздуха, белый",
      "qty": 16,
-     "transit": 0,
+     "transit": 70,
      "cost": 210.0,
      "value": 3360.0,
      "days": 0.3,
@@ -2322,33 +2322,11 @@
     {
      "offer_id": "Petsbrush_CR",
      "name": "Паровая щетка для кошек и собак, расческа для животных с паром и массажем, удаление колтунов, уход за шерстью",
-     "qty": 27,
-     "transit": 0,
+     "qty": 25,
+     "transit": 100,
      "cost": 86.0,
-     "value": 2322.0,
-     "days": 0.9,
-     "over": false,
-     "nocost": false
-    },
-    {
-     "offer_id": "VacuumTouch",
-     "name": "Вакууматор для продуктов с резаком и пакетами, вакуумный упаковщик для продуктов мощный",
-     "qty": 4,
-     "transit": 0,
-     "cost": 530.0,
-     "value": 2120.0,
-     "days": 0.2,
-     "over": false,
-     "nocost": false
-    },
-    {
-     "offer_id": "Moskit150x150_black",
-     "name": "Москитная сетка на окно на липучке, самоклеящаяся, сетка от комаров без рамки, для пластиковых и деревянных окон, балкона и дачи SOGOOD,150х150см, черная",
-     "qty": 42,
-     "transit": 0,
-     "cost": 50.0,
-     "value": 2100.0,
-     "days": 0.4,
+     "value": 2150.0,
+     "days": 0.8,
      "over": false,
      "nocost": false
     },
@@ -2360,6 +2338,17 @@
      "cost": 205.0,
      "value": 2050.0,
      "days": 0.6,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "Moskit150x150_black",
+     "name": "Москитная сетка на окно на липучке, самоклеящаяся, сетка от комаров без рамки, для пластиковых и деревянных окон, балкона и дачи SOGOOD,150х150см, черная",
+     "qty": 41,
+     "transit": 0,
+     "cost": 50.0,
+     "value": 2050.0,
+     "days": 0.4,
      "over": false,
      "nocost": false
     },
@@ -2397,10 +2386,21 @@
      "nocost": false
     },
     {
+     "offer_id": "VacuumTouch",
+     "name": "Вакууматор для продуктов с резаком и пакетами, вакуумный упаковщик для продуктов мощный",
+     "qty": 3,
+     "transit": 40,
+     "cost": 530.0,
+     "value": 1590.0,
+     "days": 0.1,
+     "over": false,
+     "nocost": false
+    },
+    {
      "offer_id": "Moskit100x210",
      "name": "Москитная сетка на дверь на магнитах, штора от комаров, антимоскитная сетка на балкон от насекомых, для дачи и сада SOGOOD 100х210",
      "qty": 15,
-     "transit": 0,
+     "transit": 100,
      "cost": 91.0,
      "value": 1365.0,
      "days": 0.1,
@@ -2411,7 +2411,7 @@
      "offer_id": "org_6_beige",
      "name": "Органайзер для хранения вещей, кофр для белья набор, 6 шт, бежевый",
      "qty": 5,
-     "transit": 0,
+     "transit": 20,
      "cost": 226.0,
      "value": 1130.0,
      "days": 0.5,
@@ -2488,7 +2488,7 @@
      "offer_id": "AquaFan_Black",
      "name": "Вентилятор настольный мини кондиционер с увлажнителем, портативный USB, от сети, бесшумный охладитель воздуха, черный",
      "qty": 2,
-     "transit": 0,
+     "transit": 100,
      "cost": 210.0,
      "value": 420.0,
      "days": 0.1,
@@ -2499,7 +2499,7 @@
      "offer_id": "turstul_green",
      "name": "Стул складной туристический со спинкой и подлокотниками SOGOOD зеленый",
      "qty": 1,
-     "transit": 0,
+     "transit": 32,
      "cost": 403.0,
      "value": 403.0,
      "days": 0.1,
@@ -2529,6 +2529,336 @@
      "nocost": false
     },
     {
+     "offer_id": "DWN-3S-P",
+     "name": "Портативный фитнес-блендер для приготовления смузи и коктейлей, розовый",
+     "qty": 0,
+     "transit": 4,
+     "cost": 190.0,
+     "value": 0.0,
+     "days": null,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "DWN-3S-G",
+     "name": "Портативный фитнес-блендер для приготовления смузи и коктейлей, зеленый",
+     "qty": 0,
+     "transit": 2,
+     "cost": 190.0,
+     "value": 0.0,
+     "days": null,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "DWN-3S-B",
+     "name": "Портативный фитнес-блендер для приготовления смузи и коктейлей, голубой",
+     "qty": 0,
+     "transit": 2,
+     "cost": 191.0,
+     "value": 0.0,
+     "days": null,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "DWN-3S-PPL",
+     "name": "Портативный фитнес-блендер для приготовления смузи и коктейлей, фиолетовый",
+     "qty": 0,
+     "transit": 6,
+     "cost": 192.0,
+     "value": 0.0,
+     "days": null,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "JG-988",
+     "name": "Настольное складное косметическое зеркало с подсветкой для макияжа/ Двухстороннее зеркало с увеличением и органайзером для аксессуаров, белое",
+     "qty": 0,
+     "transit": 120,
+     "cost": 186.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "Eot-Green",
+     "name": "Ручной измельчитель, зеленый, 450 мл / Механический измельчитель",
+     "qty": 0,
+     "transit": 108,
+     "cost": 100.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "Eot-Gray",
+     "name": "Ручной измельчитель, серый, 500 мл / Механический измельчитель",
+     "qty": 0,
+     "transit": 108,
+     "cost": 99.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "TDG-B",
+     "name": "Овощерезка многофункциональная универсальная для резки овощей и фруктов ручная ,цвет голубой",
+     "qty": 0,
+     "transit": 2,
+     "cost": 300.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "EotBig-Pink",
+     "name": "Ручной измельчитель, розовый, 900 мл / Механический измельчитель",
+     "qty": 0,
+     "transit": 20,
+     "cost": 160.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "FitoLam",
+     "name": "Фитолампа для растений полного спектра, 4 лампы, фитосветильник для рассады, лампа для растений на прищепке",
+     "qty": 0,
+     "transit": 6,
+     "cost": 377.0,
+     "value": 0.0,
+     "days": null,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "FitoLam3",
+     "name": "Фитолампа для растений полного спектра, 3 лампы, фитосветильник для рассады, лампа для растений на прищепке",
+     "qty": 0,
+     "transit": 4,
+     "cost": 449.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "ShoeRack_5",
+     "name": "Полка для обуви в прихожую, гардеробную, этажерка 5 ярусов, цвет черный, размер 49х26х89 см",
+     "qty": 0,
+     "transit": 2,
+     "cost": 250.0,
+     "value": 0.0,
+     "days": null,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "ShoeRack_4",
+     "name": "Полка для обуви в прихожую, гардеробную, этажерка 4 яруса цвет черный, размер 54х28х81 см",
+     "qty": 0,
+     "transit": 2,
+     "cost": 198.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "ShoeRack_6",
+     "name": "Полка для обуви в прихожую, гардеробную, этажерка 6 ярусов цвет черный, 54х28х120 см",
+     "qty": 0,
+     "transit": 6,
+     "cost": 280.0,
+     "value": 0.0,
+     "days": null,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "FitoLam5",
+     "name": "Фитолампа для растений полного спектра, 5 ламп, фитосветильник для рассады, лампа для растений на прищепке",
+     "qty": 0,
+     "transit": 4,
+     "cost": 465.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "ShoeRackCloth9_Gray",
+     "name": "Обувница для прихожей закрытая, SOGOOD, 9 ярусов, серый, 56х28х158 см",
+     "qty": 0,
+     "transit": 2,
+     "cost": 650.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "VacuumS_W",
+     "name": "Вакууматор для продуктов с запайкой, вакуумный упаковщик для кухни 3 режима",
+     "qty": 0,
+     "transit": 20,
+     "cost": 412.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "EAR-PG-2988",
+     "name": "Беспроводные наушники накладные с микрофоном, Bluetooth 5.3",
+     "qty": 0,
+     "transit": 12,
+     "cost": 490.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "BB-STL-BA-243",
+     "name": "Утюжок для волос выпрямитель, 2 в 1 выравнивание и завивка Barbella Pro",
+     "qty": 0,
+     "transit": 12,
+     "cost": 390.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "SKY_KEY_SL01_SET",
+     "name": "Беспроводная клавиатура и мышь Bluetooth",
+     "qty": 0,
+     "transit": 2,
+     "cost": 400.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "shelf_bath",
+     "name": "Полка для ванной комнаты, прямая самоклеящаяся, без сверлений, 1 шт",
+     "qty": 0,
+     "transit": 2,
+     "cost": 210.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "B39BLACK",
+     "name": "Наушники беспроводные большие с микрофоном блютуз",
+     "qty": 0,
+     "transit": 29,
+     "cost": 225.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "B39REDBLACK",
+     "name": "Наушники беспроводные большие с микрофоном блютуз",
+     "qty": 0,
+     "transit": 20,
+     "cost": 225.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "turstol",
+     "name": "Стол туристический складной, 56х41х41 см, черный",
+     "qty": 0,
+     "transit": 80,
+     "cost": 771.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "BB-STL-BA-388",
+     "name": "Плойка для завивки волос автоматическая Barbella, стайлер",
+     "qty": 0,
+     "transit": 2,
+     "cost": 600.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "Cleaning_robot_spr_w",
+     "name": "Робот мойщик окон с распылением, мойщик окон робот со сменными салфетками 10 шт",
+     "qty": 0,
+     "transit": 2,
+     "cost": 3400.0,
+     "value": 0.0,
+     "days": null,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "org_6_gray",
+     "name": "Органайзер для хранения вещей, кофр для белья набор, 6 шт, серый",
+     "qty": 0,
+     "transit": 40,
+     "cost": 226.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "steam_cleaner_BY",
+     "name": "Пароочиститель для уборки дома мощный, пароочиститель профессиональный 2500Вт, 12 насадок",
+     "qty": 0,
+     "transit": 8,
+     "cost": 2332.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "Otvertkamet_117bit",
+     "name": "Набор отверток для точных работ 117 в 1, 98 бит, набор бит для ремонта телефона и ноутбука",
+     "qty": 0,
+     "transit": 4,
+     "cost": 238.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "Pila_2akb_new",
+     "name": "Пила аккумуляторная цепная 6 дюймов с двумя аккумуляторами, садовая, сучкорез",
+     "qty": 0,
+     "transit": 8,
+     "cost": 927.0,
+     "value": 0.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
      "offer_id": "Campshower",
      "name": "Душ походный аккумуляторный с насосом, переносной портативный душ для дачи, кемпинга, туризма, летний душ походный",
      "qty": 8,
@@ -2549,6 +2879,17 @@
      "days": null,
      "over": true,
      "nocost": true
+    },
+    {
+     "offer_id": "MGF_Black",
+     "name": "Воздуходувка аккумуляторная",
+     "qty": 0,
+     "transit": 150,
+     "cost": null,
+     "value": 0.0,
+     "days": null,
+     "over": false,
+     "nocost": true
     }
    ]
   },
@@ -2559,8 +2900,8 @@
    "lon": 50.1,
    "cluster": "Самара",
    "addr": "г. Самара",
-   "stock_value": 560947.0,
-   "qty": 2755,
+   "stock_value": 560886.0,
+   "qty": 2754,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
@@ -2831,10 +3172,10 @@
     {
      "offer_id": "mat_lemon6",
      "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
-     "qty": 83,
+     "qty": 82,
      "transit": 0,
      "cost": 61.0,
-     "value": 5063.0,
+     "value": 5002.0,
      "days": 1.0,
      "over": false,
      "nocost": false
@@ -3464,19 +3805,19 @@
    "lon": 39.874,
    "cluster": "Ярославль",
    "addr": "г. Ярославль",
-   "stock_value": 524904.0,
-   "qty": 2919,
+   "stock_value": 528259.0,
+   "qty": 2915,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
     {
      "offer_id": "Gorelka_Gold",
      "name": "Туристическая насадка горелка с пьезоподжигом",
-     "qty": 452,
+     "qty": 451,
      "transit": 0,
      "cost": 98.0,
-     "value": 44296.0,
-     "days": 1.1,
+     "value": 44198.0,
+     "days": 1.0,
      "over": false,
      "nocost": false
     },
@@ -3494,11 +3835,11 @@
     {
      "offer_id": "Electric_shower",
      "name": "Душ походный аккумуляторный с насосом, переносной портативный душ для дачи, кемпинга, туризма, летний душ походный",
-     "qty": 50,
+     "qty": 49,
      "transit": 0,
      "cost": 670.0,
-     "value": 33500.0,
-     "days": 5.6,
+     "value": 32830.0,
+     "days": 5.5,
      "over": false,
      "nocost": false
     },
@@ -3560,10 +3901,10 @@
     {
      "offer_id": "Oil_Silver_2",
      "name": "Распылитель для масла 100 мл 2 шт, цвет серебристый",
-     "qty": 170,
+     "qty": 168,
      "transit": 0,
      "cost": 76.0,
-     "value": 12920.0,
+     "value": 12768.0,
      "days": 0.7,
      "over": false,
      "nocost": false
@@ -3593,10 +3934,10 @@
     {
      "offer_id": "mat_romashka6",
      "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
-     "qty": 176,
+     "qty": 174,
      "transit": 0,
      "cost": 65.0,
-     "value": 11440.0,
+     "value": 11310.0,
      "days": 0.8,
      "over": false,
      "nocost": false
@@ -3813,10 +4154,10 @@
     {
      "offer_id": "EotMini-Gray",
      "name": "Ручной измельчитель, серый,200 мл / Механический измельчитель",
-     "qty": 55,
+     "qty": 54,
      "transit": 0,
      "cost": 95.0,
-     "value": 5225.0,
+     "value": 5130.0,
      "days": 1.1,
      "over": false,
      "nocost": false
@@ -3840,6 +4181,17 @@
      "cost": 61.0,
      "value": 4819.0,
      "days": 1.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "retro30m_tb",
+     "name": "Ретро гирлянда уличная от сети, гирлянда с лампочками садовая 30 метров 60 ламп",
+     "qty": 3,
+     "transit": 0,
+     "cost": 1500.0,
+     "value": 4500.0,
+     "days": 1.2,
      "over": false,
      "nocost": false
     },
@@ -4292,8 +4644,8 @@
    "lon": 39.2,
    "cluster": "Воронеж",
    "addr": "г. Воронеж",
-   "stock_value": 468412.0,
-   "qty": 2447,
+   "stock_value": 468002.0,
+   "qty": 2442,
    "transit_qty": 548,
    "transit_value": 87361.0,
    "items": [
@@ -4333,10 +4685,10 @@
     {
      "offer_id": "Gorelka_Gold",
      "name": "Туристическая насадка горелка с пьезоподжигом",
-     "qty": 266,
+     "qty": 264,
      "transit": 200,
      "cost": 98.0,
-     "value": 26068.0,
+     "value": 25872.0,
      "days": 0.6,
      "over": false,
      "nocost": false
@@ -4447,7 +4799,7 @@
      "transit": 0,
      "cost": 95.0,
      "value": 9215.0,
-     "days": 9.0,
+     "days": 8.9,
      "over": false,
      "nocost": false
     },
@@ -4509,11 +4861,11 @@
     {
      "offer_id": "Moskit100x210_Black",
      "name": "Москитная сетка на дверь на магнитах, штора от комаров, антимоскитная сетка на балкон от насекомых, для дачи и сада SOGOOD 100х210 черная",
-     "qty": 89,
+     "qty": 88,
      "transit": 0,
      "cost": 90.0,
-     "value": 8010.0,
-     "days": 4.0,
+     "value": 7920.0,
+     "days": 3.9,
      "over": false,
      "nocost": false
     },
@@ -4630,10 +4982,10 @@
     {
      "offer_id": "GorelkaWhite",
      "name": "Газовая горелка с пьезоподжигом, насадка",
-     "qty": 79,
+     "qty": 77,
      "transit": 0,
      "cost": 62.0,
-     "value": 4898.0,
+     "value": 4774.0,
      "days": 1.2,
      "over": false,
      "nocost": false
@@ -5098,8 +5450,8 @@
    "lon": 60.65,
    "cluster": "Екатеринбург",
    "addr": "г. Екатеринбург",
-   "stock_value": 425349.0,
-   "qty": 2218,
+   "stock_value": 424984.0,
+   "qty": 2215,
    "transit_qty": 526,
    "transit_value": 65837.0,
    "items": [
@@ -5335,17 +5687,6 @@
      "nocost": false
     },
     {
-     "offer_id": "GRT_NOT",
-     "name": "Машинка, триммер для стрижки домашних животных, собак, кошек",
-     "qty": 29,
-     "transit": 0,
-     "cost": 213.0,
-     "value": 6177.0,
-     "days": 6.0,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "Gorelka_Gold",
      "name": "Туристическая насадка горелка с пьезоподжигом",
      "qty": 62,
@@ -5386,6 +5727,17 @@
      "cost": 853.0,
      "value": 5971.0,
      "days": 2.1,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "GRT_NOT",
+     "name": "Машинка, триммер для стрижки домашних животных, собак, кошек",
+     "qty": 28,
+     "transit": 0,
+     "cost": 213.0,
+     "value": 5964.0,
+     "days": 5.7,
      "over": false,
      "nocost": false
     },
@@ -5458,10 +5810,10 @@
     {
      "offer_id": "Oil_Silver_2",
      "name": "Распылитель для масла 100 мл 2 шт, цвет серебристый",
-     "qty": 66,
+     "qty": 64,
      "transit": 0,
      "cost": 76.0,
-     "value": 5016.0,
+     "value": 4864.0,
      "days": 0.3,
      "over": false,
      "nocost": false
@@ -6292,8 +6644,8 @@
    "lon": 39.72,
    "cluster": "Ростов",
    "addr": "г. Ростов-на-Дону",
-   "stock_value": 389396.0,
-   "qty": 2462,
+   "stock_value": 388908.0,
+   "qty": 2460,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
@@ -6311,10 +6663,10 @@
     {
      "offer_id": "Oil_Silver_2",
      "name": "Распылитель для масла 100 мл 2 шт, цвет серебристый",
-     "qty": 482,
+     "qty": 481,
      "transit": 0,
      "cost": 76.0,
-     "value": 36632.0,
+     "value": 36556.0,
      "days": 1.9,
      "over": false,
      "nocost": false
@@ -6513,7 +6865,7 @@
      "transit": 0,
      "cost": 213.0,
      "value": 6177.0,
-     "days": 6.0,
+     "days": 5.9,
      "over": false,
      "nocost": false
     },
@@ -6540,17 +6892,6 @@
      "nocost": false
     },
     {
-     "offer_id": "turstul_black",
-     "name": "Стул складной туристический со спинкой и подлокотниками SOGOOD черный",
-     "qty": 13,
-     "transit": 0,
-     "cost": 412.0,
-     "value": 5356.0,
-     "days": 0.5,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "DryMat_gray",
      "name": "Коврик для сушки посуды силиконовый, 30х40 см SOGOOD, серый",
      "qty": 54,
@@ -6569,6 +6910,17 @@
      "cost": 38.0,
      "value": 5092.0,
      "days": 1.3,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "turstul_black",
+     "name": "Стул складной туристический со спинкой и подлокотниками SOGOOD черный",
+     "qty": 12,
+     "transit": 0,
+     "cost": 412.0,
+     "value": 4944.0,
+     "days": 0.4,
      "over": false,
      "nocost": false
     },
@@ -6922,8 +7274,8 @@
    "lon": 30.395,
    "cluster": "Санкт-Петербург и СЗО",
    "addr": "пос. Бугры, Ленинградская обл.",
-   "stock_value": 367963.0,
-   "qty": 1958,
+   "stock_value": 365622.0,
+   "qty": 1942,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
@@ -6941,10 +7293,10 @@
     {
      "offer_id": "Gorelka_Gold",
      "name": "Туристическая насадка горелка с пьезоподжигом",
-     "qty": 307,
+     "qty": 298,
      "transit": 0,
      "cost": 98.0,
-     "value": 30086.0,
+     "value": 29204.0,
      "days": 0.7,
      "over": false,
      "nocost": false
@@ -6952,11 +7304,11 @@
     {
      "offer_id": "plitka8510",
      "name": "Газовая плита туристическая SOGOOD, 4 сопла, портативная походная газовая плитка с пьезоподжигом, кейсом и переходником для баллона",
-     "qty": 27,
+     "qty": 26,
      "transit": 0,
      "cost": 1043.0,
-     "value": 28161.0,
-     "days": 4.7,
+     "value": 27118.0,
+     "days": 4.5,
      "over": false,
      "nocost": false
     },
@@ -7051,10 +7403,10 @@
     {
      "offer_id": "mat_lemon6",
      "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
-     "qty": 152,
+     "qty": 151,
      "transit": 0,
      "cost": 61.0,
-     "value": 9272.0,
+     "value": 9211.0,
      "days": 1.9,
      "over": false,
      "nocost": false
@@ -7139,11 +7491,11 @@
     {
      "offer_id": "GorelkaWhite",
      "name": "Газовая горелка с пьезоподжигом, насадка",
-     "qty": 80,
+     "qty": 78,
      "transit": 0,
      "cost": 62.0,
-     "value": 4960.0,
-     "days": 1.3,
+     "value": 4836.0,
+     "days": 1.2,
      "over": false,
      "nocost": false
     },
@@ -7205,10 +7557,10 @@
     {
      "offer_id": "OilSpray_W",
      "name": "Распылитель для масла, дозатор для масла с распылителем 210 мл",
-     "qty": 38,
+     "qty": 36,
      "transit": 0,
      "cost": 77.0,
-     "value": 2926.0,
+     "value": 2772.0,
      "days": 0.5,
      "over": false,
      "nocost": false
@@ -7242,7 +7594,7 @@
      "transit": 0,
      "cost": 213.0,
      "value": 2130.0,
-     "days": 2.1,
+     "days": 2.0,
      "over": false,
      "nocost": false
     },
@@ -7357,17 +7709,6 @@
      "nocost": false
     },
     {
-     "offer_id": "OilSpray_B",
-     "name": "Распылитель для масла, дозатор для масла с распылителем 210 мл черный",
-     "qty": 1,
-     "transit": 0,
-     "cost": 77.0,
-     "value": 77.0,
-     "days": 0.0,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "Moskit150x150_black",
      "name": "Москитная сетка на окно на липучке, самоклеящаяся, сетка от комаров без рамки, для пластиковых и деревянных окон, балкона и дачи SOGOOD,150х150см, черная",
      "qty": 1,
@@ -7398,8 +7739,8 @@
    "lon": 46.034,
    "cluster": "Саратов",
    "addr": "г. Саратов",
-   "stock_value": 363941.0,
-   "qty": 1894,
+   "stock_value": 363728.0,
+   "qty": 1892,
    "transit_qty": 646,
    "transit_value": 66653.0,
    "items": [
@@ -7450,10 +7791,10 @@
     {
      "offer_id": "Gorelka_Gold",
      "name": "Туристическая насадка горелка с пьезоподжигом",
-     "qty": 186,
+     "qty": 185,
      "transit": 200,
      "cost": 98.0,
-     "value": 18228.0,
+     "value": 18130.0,
      "days": 0.4,
      "over": false,
      "nocost": false
@@ -7756,17 +8097,6 @@
      "nocost": false
     },
     {
-     "offer_id": "sekator_hd",
-     "name": "Секатор садовый профессиональный ручной, для цветов и деревьев, сучкорез для дачи",
-     "qty": 27,
-     "transit": 0,
-     "cost": 115.0,
-     "value": 3105.0,
-     "days": 0.4,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "Moskit150x150",
      "name": "Москитная сетка на окно на липучке, самоклеящаяся, сетка от комаров без рамки, для пластиковых и деревянных окон, балкона и дачи SOGOOD,150х150см, белая",
      "qty": 62,
@@ -7774,6 +8104,17 @@
      "cost": 49.0,
      "value": 3038.0,
      "days": 0.1,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "sekator_hd",
+     "name": "Секатор садовый профессиональный ручной, для цветов и деревьев, сучкорез для дачи",
+     "qty": 26,
+     "transit": 0,
+     "cost": 115.0,
+     "value": 2990.0,
+     "days": 0.4,
      "over": false,
      "nocost": false
     },
@@ -8171,8 +8512,8 @@
    "lon": 41.945,
    "cluster": "Невинномысск",
    "addr": "г. Невинномысск, Ставропольский край",
-   "stock_value": 361454.0,
-   "qty": 2427,
+   "stock_value": 362294.0,
+   "qty": 2429,
    "transit_qty": 210,
    "transit_value": 41685.0,
    "items": [
@@ -8925,6 +9266,17 @@
      "nocost": false
     },
     {
+     "offer_id": "plitka809",
+     "name": "Газовая плита туристическая SOGOOD, портативная походная газовая плитка с пьезоподжигом, кейсом и переходником для баллона",
+     "qty": 1,
+     "transit": 0,
+     "cost": 630.0,
+     "value": 630.0,
+     "days": 0.2,
+     "over": false,
+     "nocost": false
+    },
+    {
      "offer_id": "Nano_scoth_3m",
      "name": "Нано скотч, двусторонний скотч, многоразовый крепкий, клейкая ленка 3 м",
      "qty": 10,
@@ -8949,6 +9301,17 @@
     {
      "offer_id": "AquaFan_Black",
      "name": "Вентилятор настольный мини кондиционер с увлажнителем, портативный USB, от сети, бесшумный охладитель воздуха, черный",
+     "qty": 1,
+     "transit": 60,
+     "cost": 210.0,
+     "value": 210.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "AquaFan_White",
+     "name": "Вентилятор настольный мини кондиционер с увлажнителем, портативный USB, от сети, бесшумный охладитель воздуха, белый",
      "qty": 1,
      "transit": 60,
      "cost": 210.0,
@@ -9013,17 +9376,6 @@
      "nocost": false
     },
     {
-     "offer_id": "AquaFan_White",
-     "name": "Вентилятор настольный мини кондиционер с увлажнителем, портативный USB, от сети, бесшумный охладитель воздуха, белый",
-     "qty": 0,
-     "transit": 60,
-     "cost": 210.0,
-     "value": 0.0,
-     "days": 0.0,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "mat_white",
      "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие, прозрачные",
      "qty": 100,
@@ -9054,10 +9406,10 @@
    "lon": 65.534,
    "cluster": "Тюмень",
    "addr": "г. Тюмень",
-   "stock_value": 328718.0,
-   "qty": 1925,
-   "transit_qty": 565,
-   "transit_value": 44638.0,
+   "stock_value": 336061.0,
+   "qty": 2025,
+   "transit_qty": 555,
+   "transit_value": 43488.0,
    "items": [
     {
      "offer_id": "kustorez_2akb",
@@ -9073,11 +9425,22 @@
     {
      "offer_id": "Gorelka_Gold",
      "name": "Туристическая насадка горелка с пьезоподжигом",
-     "qty": 296,
+     "qty": 295,
      "transit": 100,
      "cost": 98.0,
-     "value": 29008.0,
+     "value": 28910.0,
      "days": 0.7,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "plitka8518",
+     "name": "Газовая плита туристическая SOGOOD, портативная походная газовая плитка с пьезоподжигом, керамической конфоркой, кейсом и переходником для баллона",
+     "qty": 14,
+     "transit": 0,
+     "cost": 1341.0,
+     "value": 18774.0,
+     "days": 1.2,
      "over": false,
      "nocost": false
     },
@@ -9100,17 +9463,6 @@
      "cost": 95.0,
      "value": 17860.0,
      "days": 23.4,
-     "over": false,
-     "nocost": false
-    },
-    {
-     "offer_id": "plitka8518",
-     "name": "Газовая плита туристическая SOGOOD, портативная походная газовая плитка с пьезоподжигом, керамической конфоркой, кейсом и переходником для баллона",
-     "qty": 13,
-     "transit": 0,
-     "cost": 1341.0,
-     "value": 17433.0,
-     "days": 1.1,
      "over": false,
      "nocost": false
     },
@@ -9166,6 +9518,17 @@
      "cost": 270.0,
      "value": 9450.0,
      "days": 2.3,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "mat_lemon6",
+     "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
+     "qty": 149,
+     "transit": 0,
+     "cost": 61.0,
+     "value": 9089.0,
+     "days": 1.9,
      "over": false,
      "nocost": false
     },
@@ -9386,17 +9749,6 @@
      "cost": 230.0,
      "value": 2990.0,
      "days": 1.1,
-     "over": false,
-     "nocost": false
-    },
-    {
-     "offer_id": "mat_lemon6",
-     "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
-     "qty": 49,
-     "transit": 0,
-     "cost": 61.0,
-     "value": 2989.0,
-     "days": 0.6,
      "over": false,
      "nocost": false
     },
@@ -9756,7 +10108,7 @@
      "offer_id": "sekator_hd",
      "name": "Секатор садовый профессиональный ручной, для цветов и деревьев, сучкорез для дачи",
      "qty": 0,
-     "transit": 20,
+     "transit": 10,
      "cost": 115.0,
      "value": 0.0,
      "days": 0.0,
@@ -10732,8 +11084,8 @@
    "lon": 49.106,
    "cluster": "Казань",
    "addr": "г. Казань",
-   "stock_value": 276635.0,
-   "qty": 726,
+   "stock_value": 276712.0,
+   "qty": 727,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
@@ -10894,10 +11246,10 @@
     {
      "offer_id": "OilSpray_W",
      "name": "Распылитель для масла, дозатор для масла с распылителем 210 мл",
-     "qty": 37,
+     "qty": 38,
      "transit": 0,
      "cost": 77.0,
-     "value": 2849.0,
+     "value": 2926.0,
      "days": 0.5,
      "over": false,
      "nocost": false
@@ -11120,8 +11472,8 @@
    "lon": 43.936,
    "cluster": "Нижний Новгород",
    "addr": "г. Нижний Новгород",
-   "stock_value": 220898.0,
-   "qty": 1868,
+   "stock_value": 220415.0,
+   "qty": 1862,
    "transit_qty": 280,
    "transit_value": 22675.0,
    "items": [
@@ -11172,10 +11524,10 @@
     {
      "offer_id": "Oil_Silver_2",
      "name": "Распылитель для масла 100 мл 2 шт, цвет серебристый",
-     "qty": 166,
+     "qty": 163,
      "transit": 100,
      "cost": 76.0,
-     "value": 12616.0,
+     "value": 12388.0,
      "days": 0.7,
      "over": false,
      "nocost": false
@@ -11315,11 +11667,11 @@
     {
      "offer_id": "DryMat_black",
      "name": "Коврик для сушки посуды силиконовый 30х40 см SOGOOD, черный",
-     "qty": 52,
+     "qty": 51,
      "transit": 0,
      "cost": 95.0,
-     "value": 4940.0,
-     "days": 4.8,
+     "value": 4845.0,
+     "days": 4.7,
      "over": false,
      "nocost": false
     },
@@ -11337,11 +11689,11 @@
     {
      "offer_id": "GorelkaWhite",
      "name": "Газовая горелка с пьезоподжигом, насадка",
-     "qty": 55,
+     "qty": 54,
      "transit": 0,
      "cost": 62.0,
-     "value": 3410.0,
-     "days": 0.9,
+     "value": 3348.0,
+     "days": 0.8,
      "over": false,
      "nocost": false
     },
@@ -11577,17 +11929,6 @@
      "nocost": false
     },
     {
-     "offer_id": "Gorelka_Gold",
-     "name": "Туристическая насадка горелка с пьезоподжигом",
-     "qty": 3,
-     "transit": 0,
-     "cost": 98.0,
-     "value": 294.0,
-     "days": 0.0,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "TDG-G1",
      "name": "Овощерезка многофункциональная универсальная для резки овощей и фруктов ручная ,цвет зеленый",
      "qty": 1,
@@ -11605,6 +11946,17 @@
      "transit": 0,
      "cost": 210.0,
      "value": 210.0,
+     "days": 0.0,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "Gorelka_Gold",
+     "name": "Туристическая насадка горелка с пьезоподжигом",
+     "qty": 2,
+     "transit": 0,
+     "cost": 98.0,
+     "value": 196.0,
      "days": 0.0,
      "over": false,
      "nocost": false
@@ -11717,8 +12069,8 @@
    "lon": 30.59,
    "cluster": "Санкт-Петербург и СЗО",
    "addr": "г. Колпино, Санкт-Петербург",
-   "stock_value": 197638.0,
-   "qty": 1336,
+   "stock_value": 196914.0,
+   "qty": 1329,
    "transit_qty": 30,
    "transit_value": 23130.0,
    "items": [
@@ -11729,7 +12081,7 @@
      "transit": 0,
      "cost": 412.0,
      "value": 28840.0,
-     "days": 2.6,
+     "days": 2.5,
      "over": false,
      "nocost": false
     },
@@ -11758,10 +12110,10 @@
     {
      "offer_id": "mat_romashka6",
      "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
-     "qty": 274,
+     "qty": 269,
      "transit": 0,
      "cost": 65.0,
-     "value": 17810.0,
+     "value": 17485.0,
      "days": 1.3,
      "over": false,
      "nocost": false
@@ -11769,10 +12121,10 @@
     {
      "offer_id": "Moskit150x150",
      "name": "Москитная сетка на окно на липучке, самоклеящаяся, сетка от комаров без рамки, для пластиковых и деревянных окон, балкона и дачи SOGOOD,150х150см, белая",
-     "qty": 326,
+     "qty": 325,
      "transit": 0,
      "cost": 49.0,
-     "value": 15974.0,
+     "value": 15925.0,
      "days": 0.6,
      "over": false,
      "nocost": false
@@ -12042,17 +12394,6 @@
      "nocost": false
     },
     {
-     "offer_id": "SK-201",
-     "name": "Коврик для мыши и клавиатуры, 80х30 см, с подсветкой",
-     "qty": 1,
-     "transit": 0,
-     "cost": 350.0,
-     "value": 350.0,
-     "days": 0.1,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "Petsbrush_CR",
      "name": "Паровая щетка для кошек и собак, расческа для животных с паром и массажем, удаление колтунов, уход за шерстью",
      "qty": 4,
@@ -12105,8 +12446,8 @@
    "lon": 56.229,
    "cluster": "Пермь",
    "addr": "г. Пермь",
-   "stock_value": 192592.0,
-   "qty": 1141,
+   "stock_value": 192753.0,
+   "qty": 1144,
    "transit_qty": 548,
    "transit_value": 52870.0,
    "items": [
@@ -12168,10 +12509,10 @@
     {
      "offer_id": "GorelkaWhite",
      "name": "Газовая горелка с пьезоподжигом, насадка",
-     "qty": 133,
+     "qty": 134,
      "transit": 0,
      "cost": 62.0,
-     "value": 8246.0,
+     "value": 8308.0,
      "days": 2.1,
      "over": false,
      "nocost": false
@@ -12408,6 +12749,17 @@
      "nocost": false
     },
     {
+     "offer_id": "Oil_Silver",
+     "name": "Распылитель для масла 100 мл, цвет серебристый/ Емкость дозатор для уксуса, 1 шт/ Пульверизатор/ Бутылка для жидкости",
+     "qty": 66,
+     "transit": 0,
+     "cost": 38.0,
+     "value": 2508.0,
+     "days": 0.7,
+     "over": false,
+     "nocost": false
+    },
+    {
      "offer_id": "org_6_beige",
      "name": "Органайзер для хранения вещей, кофр для белья набор, 6 шт, бежевый",
      "qty": 11,
@@ -12415,17 +12767,6 @@
      "cost": 226.0,
      "value": 2486.0,
      "days": 1.0,
-     "over": false,
-     "nocost": false
-    },
-    {
-     "offer_id": "Oil_Silver",
-     "name": "Распылитель для масла 100 мл, цвет серебристый/ Емкость дозатор для уксуса, 1 шт/ Пульверизатор/ Бутылка для жидкости",
-     "qty": 65,
-     "transit": 0,
-     "cost": 38.0,
-     "value": 2470.0,
-     "days": 0.7,
      "over": false,
      "nocost": false
     },
@@ -12661,6 +13002,17 @@
      "nocost": false
     },
     {
+     "offer_id": "mat_lemon6",
+     "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
+     "qty": 6,
+     "transit": 100,
+     "cost": 61.0,
+     "value": 366.0,
+     "days": 0.1,
+     "over": false,
+     "nocost": false
+    },
+    {
      "offer_id": "LunchBox_B_220",
      "name": "Ланч бокс для еды с подогревом SOGOOD, контейнер для еды электрический, от розетки 220V, голубой",
      "qty": 1,
@@ -12679,17 +13031,6 @@
      "cost": 324.0,
      "value": 324.0,
      "days": 0.5,
-     "over": false,
-     "nocost": false
-    },
-    {
-     "offer_id": "mat_lemon6",
-     "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
-     "qty": 5,
-     "transit": 100,
-     "cost": 61.0,
-     "value": 305.0,
-     "days": 0.1,
      "over": false,
      "nocost": false
     },
@@ -12878,8 +13219,8 @@
    "lon": 135.072,
    "cluster": "Дальний Восток",
    "addr": "г. Хабаровск",
-   "stock_value": 191036.0,
-   "qty": 1336,
+   "stock_value": 190975.0,
+   "qty": 1335,
    "transit_qty": 1122,
    "transit_value": 124638.0,
    "items": [
@@ -12952,10 +13293,10 @@
     {
      "offer_id": "mat_lemon6",
      "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
-     "qty": 167,
+     "qty": 166,
      "transit": 0,
      "cost": 61.0,
-     "value": 10187.0,
+     "value": 10126.0,
      "days": 2.1,
      "over": false,
      "nocost": false
@@ -13398,8 +13739,8 @@
    "lon": 73.368,
    "cluster": "Омск",
    "addr": "г. Омск",
-   "stock_value": 171073.0,
-   "qty": 780,
+   "stock_value": 171122.0,
+   "qty": 781,
    "transit_qty": 1400,
    "transit_value": 129570.0,
    "items": [
@@ -13697,6 +14038,17 @@
      "cost": 130.0,
      "value": 260.0,
      "days": 0.1,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "Moskit150x150",
+     "name": "Москитная сетка на окно на липучке, самоклеящаяся, сетка от комаров без рамки, для пластиковых и деревянных окон, балкона и дачи SOGOOD,150х150см, белая",
+     "qty": 1,
+     "transit": 0,
+     "cost": 49.0,
+     "value": 49.0,
+     "days": 0.0,
      "over": false,
      "nocost": false
     },
@@ -14028,8 +14380,8 @@
    "lon": 44.513,
    "cluster": "Волгоград",
    "addr": "г. Волгоград",
-   "stock_value": 169823.0,
-   "qty": 1020,
+   "stock_value": 169649.0,
+   "qty": 1018,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
@@ -14047,10 +14399,10 @@
     {
      "offer_id": "Gorelka_Gold",
      "name": "Туристическая насадка горелка с пьезоподжигом",
-     "qty": 146,
+     "qty": 145,
      "transit": 0,
      "cost": 98.0,
-     "value": 14308.0,
+     "value": 14210.0,
      "days": 0.3,
      "over": false,
      "nocost": false
@@ -14113,10 +14465,10 @@
     {
      "offer_id": "Oil_Silver_2",
      "name": "Распылитель для масла 100 мл 2 шт, цвет серебристый",
-     "qty": 95,
+     "qty": 94,
      "transit": 0,
      "cost": 76.0,
-     "value": 7220.0,
+     "value": 7144.0,
      "days": 0.4,
      "over": false,
      "nocost": false
@@ -14526,8 +14878,8 @@
    "lon": 43.936,
    "cluster": "Нижний Новгород",
    "addr": "г. Нижний Новгород",
-   "stock_value": 152991.0,
-   "qty": 1074,
+   "stock_value": 152544.0,
+   "qty": 1070,
    "transit_qty": 239,
    "transit_value": 33876.0,
    "items": [
@@ -14545,10 +14897,10 @@
     {
      "offer_id": "Gorelka_Gold",
      "name": "Туристическая насадка горелка с пьезоподжигом",
-     "qty": 270,
+     "qty": 268,
      "transit": 0,
      "cost": 98.0,
-     "value": 26460.0,
+     "value": 26264.0,
      "days": 0.6,
      "over": false,
      "nocost": false
@@ -14556,10 +14908,10 @@
     {
      "offer_id": "mat_romashka6",
      "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
-     "qty": 187,
+     "qty": 186,
      "transit": 0,
      "cost": 65.0,
-     "value": 12155.0,
+     "value": 12090.0,
      "days": 0.9,
      "over": false,
      "nocost": false
@@ -14774,17 +15126,6 @@
      "nocost": false
     },
     {
-     "offer_id": "JG-988",
-     "name": "Настольное складное косметическое зеркало с подсветкой для макияжа/ Двухстороннее зеркало с увеличением и органайзером для аксессуаров, белое",
-     "qty": 7,
-     "transit": 0,
-     "cost": 186.0,
-     "value": 1302.0,
-     "days": 0.6,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "shelf_metal_2",
      "name": "Полки для ванной комнаты 2шт, металлические угловые, полка в ванную самоклеящаяся, без сверлений",
      "qty": 4,
@@ -14814,6 +15155,17 @@
      "cost": 297.0,
      "value": 1188.0,
      "days": 1.8,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "JG-988",
+     "name": "Настольное складное косметическое зеркало с подсветкой для макияжа/ Двухстороннее зеркало с увеличением и органайзером для аксессуаров, белое",
+     "qty": 6,
+     "transit": 0,
+     "cost": 186.0,
+     "value": 1116.0,
+     "days": 0.5,
      "over": false,
      "nocost": false
     },
@@ -15712,8 +16064,8 @@
    "lon": 37.847,
    "cluster": "Москва, МО и Дальние регионы",
    "addr": "г. Пушкино, Московская обл.",
-   "stock_value": 137502.0,
-   "qty": 1412,
+   "stock_value": 137090.0,
+   "qty": 1411,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
@@ -15861,17 +16213,6 @@
      "nocost": false
     },
     {
-     "offer_id": "turstul_black",
-     "name": "Стул складной туристический со спинкой и подлокотниками SOGOOD черный",
-     "qty": 1,
-     "transit": 0,
-     "cost": 412.0,
-     "value": 412.0,
-     "days": 0.0,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "SK-201",
      "name": "Коврик для мыши и клавиатуры, 80х30 см, с подсветкой",
      "qty": 1,
@@ -15924,8 +16265,8 @@
    "lon": 35.941,
    "cluster": "Тверь",
    "addr": "Индустриальный парк «Боровлёво», Тверь",
-   "stock_value": 133773.0,
-   "qty": 782,
+   "stock_value": 133621.0,
+   "qty": 780,
    "transit_qty": 169,
    "transit_value": 23458.0,
    "items": [
@@ -15965,10 +16306,10 @@
     {
      "offer_id": "Oil_Silver_2",
      "name": "Распылитель для масла 100 мл 2 шт, цвет серебристый",
-     "qty": 72,
+     "qty": 70,
      "transit": 0,
      "cost": 76.0,
-     "value": 5472.0,
+     "value": 5320.0,
      "days": 0.3,
      "over": false,
      "nocost": false
@@ -16909,8 +17250,8 @@
    "lon": 37.769,
    "cluster": "Юг (Новороссийск)",
    "addr": "г. Новороссийск",
-   "stock_value": 127522.0,
-   "qty": 862,
+   "stock_value": 127219.0,
+   "qty": 860,
    "transit_qty": 10,
    "transit_value": 2260.0,
    "items": [
@@ -17102,17 +17443,6 @@
      "nocost": false
     },
     {
-     "offer_id": "org_6_beige",
-     "name": "Органайзер для хранения вещей, кофр для белья набор, 6 шт, бежевый",
-     "qty": 10,
-     "transit": 0,
-     "cost": 226.0,
-     "value": 2260.0,
-     "days": 0.9,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "mat_lemon6",
      "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
      "qty": 36,
@@ -17120,6 +17450,17 @@
      "cost": 61.0,
      "value": 2196.0,
      "days": 0.4,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "org_6_beige",
+     "name": "Органайзер для хранения вещей, кофр для белья набор, 6 шт, бежевый",
+     "qty": 9,
+     "transit": 0,
+     "cost": 226.0,
+     "value": 2034.0,
+     "days": 0.8,
      "over": false,
      "nocost": false
     },
@@ -17137,10 +17478,10 @@
     {
      "offer_id": "OilSpray_W",
      "name": "Распылитель для масла, дозатор для масла с распылителем 210 мл",
-     "qty": 23,
+     "qty": 22,
      "transit": 0,
      "cost": 77.0,
-     "value": 1771.0,
+     "value": 1694.0,
      "days": 0.3,
      "over": false,
      "nocost": false
@@ -17319,19 +17660,19 @@
    "lon": 39.72,
    "cluster": "Ростов",
    "addr": "г. Ростов-на-Дону",
-   "stock_value": 120703.0,
-   "qty": 1002,
+   "stock_value": 119662.0,
+   "qty": 1000,
    "transit_qty": 451,
    "transit_value": 82248.0,
    "items": [
     {
      "offer_id": "turstol",
      "name": "Стол туристический складной, 56х41х41 см, черный",
-     "qty": 19,
+     "qty": 18,
      "transit": 0,
      "cost": 771.0,
-     "value": 14649.0,
-     "days": 5.3,
+     "value": 13878.0,
+     "days": 5.0,
      "over": false,
      "nocost": false
     },
@@ -17371,10 +17712,10 @@
     {
      "offer_id": "K-203_orange",
      "name": "Газовая горелка-плита / Походная туристическая портативная плита с пьезоподжигом в чехле / Складная плитка с ветрозащитой",
-     "qty": 25,
+     "qty": 24,
      "transit": 0,
      "cost": 270.0,
-     "value": 6750.0,
+     "value": 6480.0,
      "days": 1.6,
      "over": false,
      "nocost": false
@@ -17795,18 +18136,18 @@
    "lon": 39.171,
    "cluster": "Краснодар (Адыгейск)",
    "addr": "г. Адыгейск, Республика Адыгея",
-   "stock_value": 114831.0,
-   "qty": 839,
+   "stock_value": 114733.0,
+   "qty": 838,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
     {
      "offer_id": "Gorelka_Gold",
      "name": "Туристическая насадка горелка с пьезоподжигом",
-     "qty": 175,
+     "qty": 174,
      "transit": 0,
      "cost": 98.0,
-     "value": 17150.0,
+     "value": 17052.0,
      "days": 0.4,
      "over": false,
      "nocost": false
@@ -18337,8 +18678,8 @@
    "lon": 39.2,
    "cluster": "Воронеж",
    "addr": "г. Воронеж",
-   "stock_value": 81527.0,
-   "qty": 572,
+   "stock_value": 81359.0,
+   "qty": 570,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
@@ -18475,17 +18816,6 @@
      "nocost": false
     },
     {
-     "offer_id": "P47BLACK",
-     "name": "Беспроводные наушники накладные, черные с микрофоном, Bluetooth 5.0",
-     "qty": 14,
-     "transit": 0,
-     "cost": 130.0,
-     "value": 1820.0,
-     "days": 0.3,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "Petsbrush_CR",
      "name": "Паровая щетка для кошек и собак, расческа для животных с паром и массажем, удаление колтунов, уход за шерстью",
      "qty": 21,
@@ -18497,17 +18827,6 @@
      "nocost": false
     },
     {
-     "offer_id": "Oil_Silver",
-     "name": "Распылитель для масла 100 мл, цвет серебристый/ Емкость дозатор для уксуса, 1 шт/ Пульверизатор/ Бутылка для жидкости",
-     "qty": 45,
-     "transit": 0,
-     "cost": 38.0,
-     "value": 1710.0,
-     "days": 0.5,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "88130CUR-COFFEE",
      "name": "Тканевый шкаф для одежды SOGOOD складной каркасный, дверцы-шторки, 130x45x170 см, кофейный",
      "qty": 2,
@@ -18515,6 +18834,28 @@
      "cost": 850.0,
      "value": 1700.0,
      "days": 1.5,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "P47BLACK",
+     "name": "Беспроводные наушники накладные, черные с микрофоном, Bluetooth 5.0",
+     "qty": 13,
+     "transit": 0,
+     "cost": 130.0,
+     "value": 1690.0,
+     "days": 0.3,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "Oil_Silver",
+     "name": "Распылитель для масла 100 мл, цвет серебристый/ Емкость дозатор для уксуса, 1 шт/ Пульверизатор/ Бутылка для жидкости",
+     "qty": 44,
+     "transit": 0,
+     "cost": 38.0,
+     "value": 1672.0,
+     "days": 0.4,
      "over": false,
      "nocost": false
     },
@@ -19210,8 +19551,8 @@
    "lon": 30.409,
    "cluster": "Санкт-Петербург и СЗО",
    "addr": "промзона Шушары (площадка уточняется)",
-   "stock_value": 32088.0,
-   "qty": 301,
+   "stock_value": 31934.0,
+   "qty": 299,
    "transit_qty": 493,
    "transit_value": 50626.0,
    "items": [
@@ -19339,10 +19680,10 @@
     {
      "offer_id": "OilSpray_B",
      "name": "Распылитель для масла, дозатор для масла с распылителем 210 мл черный",
-     "qty": 8,
+     "qty": 6,
      "transit": 180,
      "cost": 77.0,
-     "value": 616.0,
+     "value": 462.0,
      "days": 0.1,
      "over": false,
      "nocost": false
@@ -19433,8 +19774,8 @@
    "lon": 38.12,
    "cluster": "Москва, МО и Дальние регионы",
    "addr": "г. Жуковский, Московская обл.",
-   "stock_value": 26652.0,
-   "qty": 101,
+   "stock_value": 26690.0,
+   "qty": 102,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
@@ -19529,10 +19870,10 @@
     {
      "offer_id": "Oil_Silver",
      "name": "Распылитель для масла 100 мл, цвет серебристый/ Емкость дозатор для уксуса, 1 шт/ Пульверизатор/ Бутылка для жидкости",
-     "qty": 17,
+     "qty": 18,
      "transit": 0,
      "cost": 38.0,
-     "value": 646.0,
+     "value": 684.0,
      "days": 0.2,
      "over": false,
      "nocost": false
@@ -20121,18 +20462,18 @@
    "lon": 37.766,
    "cluster": "Москва, МО и Дальние регионы",
    "addr": "г.о. Домодедово, Московская обл.",
-   "stock_value": 23716.0,
-   "qty": 197,
+   "stock_value": 23563.0,
+   "qty": 195,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
     {
      "offer_id": "Oil_Silver_2",
      "name": "Распылитель для масла 100 мл 2 шт, цвет серебристый",
-     "qty": 108,
+     "qty": 107,
      "transit": 0,
      "cost": 76.0,
-     "value": 8208.0,
+     "value": 8132.0,
      "days": 0.4,
      "over": false,
      "nocost": false
@@ -20182,17 +20523,6 @@
      "nocost": false
     },
     {
-     "offer_id": "OilSpray_W",
-     "name": "Распылитель для масла, дозатор для масла с распылителем 210 мл",
-     "qty": 8,
-     "transit": 0,
-     "cost": 77.0,
-     "value": 616.0,
-     "days": 0.1,
-     "over": false,
-     "nocost": false
-    },
-    {
      "offer_id": "aquasteam_cat_w",
      "name": "Увлажнитель воздуха для дома настольный с подсветкой, белый",
      "qty": 2,
@@ -20200,6 +20530,17 @@
      "cost": 287.0,
      "value": 574.0,
      "days": 0.7,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "OilSpray_W",
+     "name": "Распылитель для масла, дозатор для масла с распылителем 210 мл",
+     "qty": 7,
+     "transit": 0,
+     "cost": 77.0,
+     "value": 539.0,
+     "days": 0.1,
      "over": false,
      "nocost": false
     },
@@ -20697,8 +21038,8 @@
    "lon": 27.561,
    "cluster": "Беларусь",
    "addr": "г. Минск, Беларусь",
-   "stock_value": 10205.0,
-   "qty": 33,
+   "stock_value": 10028.0,
+   "qty": 32,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
@@ -20853,17 +21194,6 @@
      "cost": 182.0,
      "value": 182.0,
      "days": 0.4,
-     "over": false,
-     "nocost": false
-    },
-    {
-     "offer_id": "K-202",
-     "name": "Газовая горелка-плита / Походная туристическая портативная плита с пьезоподжигом в чехле / Складная плитка с ветрозащитой",
-     "qty": 1,
-     "transit": 0,
-     "cost": 177.0,
-     "value": 177.0,
-     "days": 0.1,
      "over": false,
      "nocost": false
     },
@@ -21121,8 +21451,8 @@
    "lon": 20.51,
    "cluster": "Калининград",
    "addr": "г. Калининград",
-   "stock_value": 2684.0,
-   "qty": 8,
+   "stock_value": 2424.0,
+   "qty": 7,
    "transit_qty": 0,
    "transit_value": 0.0,
    "items": [
@@ -21145,17 +21475,6 @@
      "cost": 657.0,
      "value": 657.0,
      "days": 0.4,
-     "over": false,
-     "nocost": false
-    },
-    {
-     "offer_id": "TDG-G1",
-     "name": "Овощерезка многофункциональная универсальная для резки овощей и фруктов ручная ,цвет зеленый",
-     "qty": 1,
-     "transit": 0,
-     "cost": 260.0,
-     "value": 260.0,
-     "days": 0.7,
      "over": false,
      "nocost": false
     },
@@ -21336,8 +21655,8 @@
    "lon": 92.852,
    "cluster": "Красноярск",
    "addr": "г. Красноярск",
-   "stock_value": 1432.0,
-   "qty": 8,
+   "stock_value": 1493.0,
+   "qty": 9,
    "transit_qty": 1225,
    "transit_value": 133900.0,
    "items": [
@@ -21371,6 +21690,17 @@
      "cost": 130.0,
      "value": 130.0,
      "days": 0.1,
+     "over": false,
+     "nocost": false
+    },
+    {
+     "offer_id": "mat_lemon6",
+     "name": "Коврики для холодильника 45х30 см, 6 штук, силиконовые, противоскользящие",
+     "qty": 1,
+     "transit": 0,
+     "cost": 61.0,
+     "value": 61.0,
+     "days": 0.0,
      "over": false,
      "nocost": false
     },
